@@ -85,7 +85,10 @@ def process_node(node):
             "mgmt_svi40": subnets["mgmt"][-2],
             "special_svi50": subnets["special"][-2],
         },
-        "wlc": {"mgmt": subnets["mgmt"][1]},
+        "wlc": {
+            "mgmt": subnets["mgmt"][1],
+            "mgmt_hex": hex(int(subnets["mgmt"][1]))[2:].upper(),
+        },
         "asw1": {"mgmt_svi40": subnets["mgmt"][5]},
         "asw2": {"mgmt_svi40": subnets["mgmt"][6]},
         "asw3": {"mgmt_svi40": subnets["mgmt"][7]},

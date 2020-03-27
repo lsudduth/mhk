@@ -1,7 +1,7 @@
 ip routing
 ip multicast-routing
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,40,50
+ip dhcp snooping vlan 10,20,30,50
 hostname DSW-{{ data["telephony_prefix"] }}
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
@@ -21,13 +21,13 @@ ip dhcp excluded-address {{ data["addr"]["dsw"]["data_svi10"] }}
 ip dhcp pool DATA_VLAN10
  network {{ data["subnets"]["data"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["data_svi10"] }}
- option 43 ascii {{ data["addr"]["wlc"]["mgmt"] }}
+ option 43 hex 00F104{{ data["addr"]["wlc"]["mgmt_hex"] }}
 !
 ip dhcp excluded-address {{ data["addr"]["dsw"]["biomed_svi20"] }}
 ip dhcp pool BIOMED_VLAN20
  network {{ data["subnets"]["biomed"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["biomed_svi20"] }}
- option 43 ascii {{ data["addr"]["wlc"]["mgmt"] }}
+ option 43 hex 00F104{{ data["addr"]["wlc"]["mgmt_hex"] }}
 !
 ip dhcp excluded-address {{ data["addr"]["dsw"]["voice_svi30"] }}
 ip dhcp pool VOICE_VLAN30
@@ -39,7 +39,7 @@ ip dhcp excluded-address {{ data["addr"]["dsw"]["special_svi50"] }}
 ip dhcp pool SPECIAL_VLAN50
  network {{ data["subnets"]["special"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["special_svi50"] }}
- option 43 ascii {{ data["addr"]["wlc"]["mgmt"] }}
+ option 43 hex 00F104{{ data["addr"]["wlc"]["mgmt_hex"] }}
 !
 interface Loopback0
  ip address {{ data["addr"]["dsw"]["lb0"] }} 255.255.255.255
@@ -171,3 +171,24 @@ of use. Discontinue access immediately if you do not agree to the
 conditions stated in this notice.
 ----------------------------------------------------------------------
 %
+!
+line con 0
+ exec-timeout 30 0
+ logging synchronous
+ login local
+ transport input none
+ stopbits 1
+line aux 0
+ no exec
+ transport input none
+line vty 0 4
+ exec-timeout 10 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+!
+ntp server {{ data["addr"]["rtr"]["lb0"] }}
+!
+end

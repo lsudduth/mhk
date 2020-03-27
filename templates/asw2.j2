@@ -1,6 +1,6 @@
 hostname ASW2-{{ data["telephony_prefix"] }}
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,40,50
+ip dhcp snooping vlan 10,20,30,50
 no ip routing
 vtp mode off
 vlan 10
@@ -60,3 +60,24 @@ of use. Discontinue access immediately if you do not agree to the
 conditions stated in this notice.
 ----------------------------------------------------------------------
 %
+!
+line con 0
+ exec-timeout 30 0
+ logging synchronous
+ login local
+ transport input none
+ stopbits 1
+line aux 0
+ no exec
+ transport input none
+line vty 0 4
+ exec-timeout 10 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+!
+ntp server {{ data["addr"]["rtr"]["lb0"] }}
+!
+end
