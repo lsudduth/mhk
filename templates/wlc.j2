@@ -1,1 +1,3 @@
 hostname WLC-{{ data["telephony_prefix"] }}
+
+ip address {{ data["addr"]["wlc"]["mgmt"] }} {{ data["subnets"]["mgmt"].netmask }}

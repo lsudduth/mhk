@@ -17,26 +17,29 @@ vlan 40
 vlan 50
  name SPECIAL
 !
+ip dhcp excluded-address {{ data["addr"]["dsw"]["data_svi10"] }}
 ip dhcp pool DATA_VLAN10
  network {{ data["subnets"]["data"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["data_svi10"] }}
+ option 43 ascii {{ data["addr"]["wlc"]["mgmt"] }}
 !
+ip dhcp excluded-address {{ data["addr"]["dsw"]["biomed_svi20"] }}
 ip dhcp pool BIOMED_VLAN20
  network {{ data["subnets"]["biomed"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["biomed_svi20"] }}
+ option 43 ascii {{ data["addr"]["wlc"]["mgmt"] }}
 !
+ip dhcp excluded-address {{ data["addr"]["dsw"]["voice_svi30"] }}
 ip dhcp pool VOICE_VLAN30
  network {{ data["subnets"]["voice"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["voice_svi30"] }}
  option 150 ip {{ data["addr"]["rtr"]["lb0"] }}
 !
-ip dhcp pool MGMT_VLAN40
- network {{ data["subnets"]["mgmt"].with_netmask.replace("/", " ") }}
- default-router {{ data["addr"]["dsw"]["mgmt_svi40"] }}
-!
+ip dhcp excluded-address {{ data["addr"]["dsw"]["special_svi50"] }}
 ip dhcp pool SPECIAL_VLAN50
  network {{ data["subnets"]["special"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["special_svi50"] }}
+ option 43 ascii {{ data["addr"]["wlc"]["mgmt"] }}
 !
 interface Loopback0
  ip address {{ data["addr"]["dsw"]["lb0"] }} 255.255.255.255
@@ -98,7 +101,7 @@ interface Vlan10
  ip address {{ data["addr"]["dsw"]["data_svi10"] }} {{ data["subnets"]["data"].netmask }}
  ip verify unicast source reachable-via rx
  ip access-group ACL_DATA_IN in
- im pim sparse-mode
+ ip pim sparse-mode
  no shutdown
 !
 interface Vlan20
@@ -106,7 +109,7 @@ interface Vlan20
  ip address {{ data["addr"]["dsw"]["biomed_svi20"] }} {{ data["subnets"]["biomed"].netmask }}
  ip verify unicast source reachable-via rx
  ip access-group ACL_BIOMED_IN in
- im pim sparse-mode
+ ip pim sparse-mode
  no shutdown
 !
 interface Vlan30
@@ -114,7 +117,6 @@ interface Vlan30
  ip address {{ data["addr"]["dsw"]["voice_svi30"] }} {{ data["subnets"]["voice"].netmask }}
  ip verify unicast source reachable-via rx
  ip access-group ACL_VOICE_IN in
- im pim sparse-mode
  no shutdown
 !
 interface Vlan40
@@ -122,7 +124,6 @@ interface Vlan40
  ip address {{ data["addr"]["dsw"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }}
  ip verify unicast source reachable-via rx
  ip access-group ACL_MGMT_IN in
- im pim sparse-mode
  no shutdown
 !
 interface Vlan50
@@ -133,7 +134,7 @@ interface Vlan50
  im pim sparse-mode
  no shutdown
 !
-router eigrp MHK
+router eigrp SHK
  !
  address-family ipv4 unicast autonomous-system 1
   !

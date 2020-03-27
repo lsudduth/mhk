@@ -2,7 +2,7 @@
 
 """
 Author: Nick Russo (nickrus@cisco.com)
-Purpose: Build a new Mobile Hospital Kit (MHK) configuration set.
+Purpose: Build a new Surge Hospital Kit (SHK) configuration set.
 """
 
 import ipaddress
@@ -85,11 +85,12 @@ def process_node(node):
             "mgmt_svi40": subnets["mgmt"][-2],
             "special_svi50": subnets["special"][-2],
         },
-        "asw1": {"mgmt_svi40": subnets["mgmt"][1]},
-        "asw2": {"mgmt_svi40": subnets["mgmt"][2]},
-        "asw3": {"mgmt_svi40": subnets["mgmt"][3]},
-        "asw4": {"mgmt_svi40": subnets["mgmt"][4]},
-        "asw5": {"mgmt_svi40": subnets["mgmt"][5]},
+        "wlc": {"mgmt": subnets["mgmt"][1]},
+        "asw1": {"mgmt_svi40": subnets["mgmt"][5]},
+        "asw2": {"mgmt_svi40": subnets["mgmt"][6]},
+        "asw3": {"mgmt_svi40": subnets["mgmt"][7]},
+        "asw4": {"mgmt_svi40": subnets["mgmt"][8]},
+        "asw5": {"mgmt_svi40": subnets["mgmt"][9]},
     }
 
     # Update data dict with new data, then return it

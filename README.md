@@ -1,11 +1,11 @@
 [![Build Status](https://travis-ci.com/nickrusso42518/mhk.svg?branch=master)](https://travis-ci.com/nickrusso42518/mhk)
 
-# Cisco Mobile Hospitak Kit (MHK)
+# Cisco Surge Hospital Kit (SHK)
 Experimental script to build configurations for all devices in the kit.
 
 After running the script, the `telephony_prefix` specified for each
 node definition is represented by a subdirectory in `outputs/`. Within
-that subdirectory are the configuration files in a given MHK.
+that subdirectory are the configuration files in a given SHK.
 
 Given this `inputs.yml` file:
 ```
