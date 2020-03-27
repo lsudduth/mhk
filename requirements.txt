@@ -1,4 +1,6 @@
 yamllint
+pylint
+black
 pyyaml
 jinja2
 ipaddress
