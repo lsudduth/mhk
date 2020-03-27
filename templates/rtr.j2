@@ -79,7 +79,7 @@ controller Cellular 0/2/0
 !
 class-map match-all CMAP_VOICE_MEDIA
  match dscp ef
-class-map match-all CMAP_VOICE_SIGNALING
+class-map match-all CMAP_VOICE_SIGNALLING
  match dscp af31
 class-map match-all CMAP_NETWORK_CONTROL
  match dscp cs6 cs7
@@ -87,7 +87,7 @@ class-map match-all CMAP_NETWORK_CONTROL
 policy-map PMAP_WAN_QUEUING
  class CMAP_VOICE_MEDIA
   priority percent 30
- class CMAP_VOICE_SIGNALING
+ class CMAP_VOICE_SIGNALLING
   bandwidth percent 5 
  class CMAP_NETWORK_CONTROL
   bandwidth percent 5 
@@ -97,7 +97,7 @@ policy-map PMAP_WAN_QUEUING
 !
 policy-map PMAP_WAN_SHAPING
  class class-default
-  shape average percent 100
+  shape average percent 99
    service-policy PMAP_WAN_QUEUING
 !
 crypto logging session
