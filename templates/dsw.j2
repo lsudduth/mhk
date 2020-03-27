@@ -1,4 +1,7 @@
 ip routing
+ip multicast-routing
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,40,50
 hostname DSW-{{ data["telephony_prefix"] }}
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
@@ -14,12 +17,42 @@ vlan 40
 vlan 50
  name SPECIAL
 !
+ip dhcp pool DATA_VLAN10
+ network {{ data["subnets"]["data"].with_netmask.replace("/", " ") }}
+ default-router {{ data["addr"]["dsw"]["data_svi10"] }}
+!
+ip dhcp pool BIOMED_VLAN20
+ network {{ data["subnets"]["biomed"].with_netmask.replace("/", " ") }}
+ default-router {{ data["addr"]["dsw"]["biomed_svi20"] }}
+!
+ip dhcp pool VOICE_VLAN30
+ network {{ data["subnets"]["voice"].with_netmask.replace("/", " ") }}
+ default-router {{ data["addr"]["dsw"]["voice_svi30"] }}
+ option 150 ip {{ data["addr"]["rtr"]["lb0"] }}
+!
+ip dhcp pool MGMT_VLAN40
+ network {{ data["subnets"]["mgmt"].with_netmask.replace("/", " ") }}
+ default-router {{ data["addr"]["dsw"]["mgmt_svi40"] }}
+!
+ip dhcp pool SPECIAL_VLAN50
+ network {{ data["subnets"]["special"].with_netmask.replace("/", " ") }}
+ default-router {{ data["addr"]["dsw"]["special_svi50"] }}
+!
+interface Loopback0
+ ip address {{ data["addr"]["dsw"]["lb0"] }} 255.255.255.255
+ im pim sparse-mode
+ no shutdown
+!
+ip pim rp-address {{ data["addr"]["dsw"]["lb0"] }}
+!
 {% for i in range(40) -%}
 interface GigabitEthernet1/0/{{ i+1 }}
  description USER/VOICE
  switchport mode access
  switchport access vlan 10
  switchport voice vlan 20
+ switchport port-security
+ switchport port-security violation restrict
  spanning-tree portfast
  no shutdown
 !
@@ -42,31 +75,62 @@ interface GigabitEthernet1/0/48
  description ROUTER P2P
  no switchport
  ip address 192.168.0.2 255.255.255.252
+ ip verify unicast source reachable-via rx
  no shutdown
+!
+ip access-list extended ACL_DATA_IN
+ permit ip any any
+!
+ip access-list extended ACL_BIOMED_IN
+ permit ip any any
+!
+ip access-list extended ACL_VOICE_IN
+ permit ip any any
+!
+ip access-list extended ACL_MGMT_IN
+ permit ip any any
+!
+ip access-list extended ACL_SPECIAL_IN
+ permit ip any any
 !
 interface Vlan10
  description DATA VLAN
- ip address {{ data["addr"]["dsw"]["data_svi10"] }} 255.255.254.0
+ ip address {{ data["addr"]["dsw"]["data_svi10"] }} {{ data["subnets"]["data"].netmask }}
+ ip verify unicast source reachable-via rx
+ ip access-group ACL_DATA_IN in
+ im pim sparse-mode
  no shutdown
 !
 interface Vlan20
  description BIOMED VLAN
- ip address {{ data["addr"]["dsw"]["biomed_svi20"] }} 255.255.255.192
+ ip address {{ data["addr"]["dsw"]["biomed_svi20"] }} {{ data["subnets"]["biomed"].netmask }}
+ ip verify unicast source reachable-via rx
+ ip access-group ACL_BIOMED_IN in
+ im pim sparse-mode
  no shutdown
 !
 interface Vlan30
  description VOICE VLAN
- ip address {{ data["addr"]["dsw"]["voice_svi30"] }} 255.255.255.192
+ ip address {{ data["addr"]["dsw"]["voice_svi30"] }} {{ data["subnets"]["voice"].netmask }}
+ ip verify unicast source reachable-via rx
+ ip access-group ACL_VOICE_IN in
+ im pim sparse-mode
  no shutdown
 !
 interface Vlan40
  description MGMT VLAN
- ip address {{ data["addr"]["dsw"]["mgmt_svi40"] }} 255.255.255.224
+ ip address {{ data["addr"]["dsw"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }}
+ ip verify unicast source reachable-via rx
+ ip access-group ACL_MGMT_IN in
+ im pim sparse-mode
  no shutdown
 !
 interface Vlan50
  description SPECIAL (EXCEPTIONS) VLAN
- ip address {{ data["addr"]["dsw"]["special_svi50"] }} 255.255.255.224
+ ip address {{ data["addr"]["dsw"]["special_svi50"] }} {{ data["subnets"]["special"].netmask }} 
+ ip verify unicast source reachable-via rx
+ ip access-group ACL_SPECIAL_IN in
+ im pim sparse-mode
  no shutdown
 !
 router eigrp MHK
@@ -79,9 +143,30 @@ router eigrp MHK
   !
   af-interface GigabitEthernet1/0/48
    no passive-interface
+   authentication mode hmac-sha-256 EIGRP123
   exit-af-interface
   !
   topology base
   exit-af-topology
   network 0.0.0.0
   metric weights 0 0 0 1 0 0 0
+!
+banner motd %
+----------------------------------------------------------------------
+NOTICE TO USERS
+This is an official computer system and is the property of the
+hospital. It is for authorized users only. Unauthorized users
+are prohibited. Users (authorized or unauthorized) have no explicit
+or implicit expectation of privacy. Any or all uses of this system
+may be subject to one or more of the following actions: interception,
+monitoring, recording, auditing, inspection and disclosing to security
+personnel and law enforcement personnel, as well as authorized
+officials of other agencies, both domestic and foreign. By using this
+system, the user consents to these actions. Unauthorized or improper
+use of this system may result in administrative disciplinary action
+and civil and criminal penalties. By accessing this system you
+indicate your awareness of and consent to these terms and conditions
+of use. Discontinue access immediately if you do not agree to the
+conditions stated in this notice.
+----------------------------------------------------------------------
+%

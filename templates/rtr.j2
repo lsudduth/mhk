@@ -183,8 +183,7 @@ interface GigabitEthernet0/0/0
  description DISTRIBUTION SWITCH
  negotiation auto
  ip address 192.168.0.1 255.255.255.252
- ip access-group ACL_INTERNET_IN in
- ip access-group ACL_INTERNET_OUT out
+ ip verify unicast source reachable-via rx
  no shutdown
 !
 interface GigabitEthernet0/0/1
@@ -219,19 +218,18 @@ interface Cellular0/2/0
  bandwidth receive 4000
  vrf forwarding FVRF_CELLULAR
  ip address negotiated
- ip access-group INTERNET-IN in
- ip access-group dnsblock out
+ ip access-group ACL_INTERNET_IN in
+ ip access-group ACL_INTERNET_OUT out
  dialer in-band
  dialer-group 1
  pulse-time 1
- service-policy output WAN_QOS
+ service-policy output PMAP_WAN_SHAPING
+ no shutdown
 !
 interface Cellular0/2/1
  description UNUSED
  no ip address
  shutdown
-!
-interface Service-Engine0/4/0
 !
 interface GigabitEthernet0
  vrf forwarding Mgmt-intf
@@ -245,6 +243,10 @@ router eigrp MHK
   !
   af-interface Loopback0
    passive-interface
+  exit-af-interface
+  !
+  af-interface default
+   authentication mode hmac-sha-256 EIGRP123
   exit-af-interface
   !
   topology base

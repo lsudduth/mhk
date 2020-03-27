@@ -1,4 +1,6 @@
 hostname ASW5-{{ data["telephony_prefix"] }}
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,40,50
 no ip routing
 vtp mode off
 vlan 10
@@ -18,6 +20,8 @@ interface GigabitEthernet1/0/{{ i+1 }}
  switchport mode access
  switchport access vlan 10
  switchport voice vlan 20
+ switchport port-security
+ switchport port-security violation restrict
  spanning-tree portfast
  no shutdown
 !
@@ -27,49 +31,32 @@ interface GigabitEthernet1/0/{{ i+1 }}
  description VLAN TRUNK
  switchport mode trunk
  switchport nonnegotiate
+ ip dhcp snooping trust
  no shutdown
 !
 {% endfor %}
 interface Vlan40
  description MGMT VLAN
- ip address {{ data["addr"]["asw1"]["mgmt_svi40"] }} 255.255.255.224
+ ip address {{ data["addr"]["asw5"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }}
  no shutdown
 !
 ip default-gateway {{ data["addr"]["dsw"]["mgmt_svi40"] }}
-no ip routing
-vtp mode off
-vlan 10
- name DATA
-vlan 20
- name BIOMED
-vlan 30
- name VOICE
-vlan 40
- name MGMT
-vlan 50
- name SPECIAL
-!
-{% for i in range(44) -%}
-interface GigabitEthernet1/0/{{ i+1 }}
- description USER/VOICE
- switchport mode access
- switchport access vlan 10
- switchport voice vlan 20
- spanning-tree portfast
- no shutdown
-!
-{% endfor %}
-{% for i in range(44, 48) -%}
-interface GigabitEthernet1/0/{{ i+1 }}
- description VLAN TRUNK
- switchport mode trunk
- switchport nonnegotiate
- no shutdown
-!
-{% endfor %}
-interface Vlan40
- description MGMT VLAN
- ip address {{ data["addr"]["asw5"]["mgmt_svi40"] }} 255.255.255.224
- no shutdown
-!
-ip default-gateway {{ data["addr"]["dsw"]["mgmt_svi40"] }}
+banner motd %
+----------------------------------------------------------------------
+NOTICE TO USERS
+This is an official computer system and is the property of the
+hospital. It is for authorized users only. Unauthorized users
+are prohibited. Users (authorized or unauthorized) have no explicit
+or implicit expectation of privacy. Any or all uses of this system
+may be subject to one or more of the following actions: interception,
+monitoring, recording, auditing, inspection and disclosing to security
+personnel and law enforcement personnel, as well as authorized
+officials of other agencies, both domestic and foreign. By using this
+system, the user consents to these actions. Unauthorized or improper
+use of this system may result in administrative disciplinary action
+and civil and criminal penalties. By accessing this system you
+indicate your awareness of and consent to these terms and conditions
+of use. Discontinue access immediately if you do not agree to the
+conditions stated in this notice.
+----------------------------------------------------------------------
+%
