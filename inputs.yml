@@ -1,0 +1,9 @@
+---
+node_list:
+  - telephony_prefix: 1000
+    ipv4_network: 172.16.0.0/22
+    index_offset: 0
+  - telephony_prefix: 2000
+    ipv4_network: 172.16.4.0/22
+    index_offset: 20
+...

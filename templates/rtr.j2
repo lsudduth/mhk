@@ -1,0 +1,363 @@
+version 16.6
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+!
+hostname RTR-{{ data["telephony_prefix"] }}
+!
+boot-start-marker
+boot-end-marker
+!
+vrf definition Mgmt-intf
+ address-family ipv4
+ exit-address-family
+!
+vrf definition FVRF_WIRELINE
+ description FRONT DOOR VRF FOR WIRELINE INTERNET
+ address-family ipv4
+ exit-address-family
+!
+vrf definition FVRF_CELLULAR
+ description FRONT DOOR VRF FOR CELLULAR INTERNET
+ address-family ipv4
+ exit-address-family
+!
+vrf definition FVRF_SATELLITE
+ description FRONT DOOR VRF FOR SATELLITE INTERNET
+ address-family ipv4
+ exit-address-family
+!
+logging buffered 51200 informational
+enable secret cisco123
+!
+no aaa new-model
+ip domain name cisco.com
+login on-success log
+!
+voice service voip
+ ip address trusted list
+  ipv4 x.x.x.x  x.x.x.x 
+  ipv4 x.x.x.x  x.x.x.x 
+ media disable-detailed-stats
+ allow-connections sip to sip
+ no supplementary-service sip handle-replaces
+ fax protocol t38 version 0 ls-redundancy 0 hs-redundancy 0 fallback none
+ sip
+  bind control source-interface Loopback0
+  bind media source-interface Loopback0
+  registrar server expires max 1200 min 300
+  no call service stop
+!
+voice class codec 1
+ codec preference 1 g711ulaw
+ codec preference 2 g729r8
+!
+voice register global
+ mode cme
+ source-address x.x.x.x  port 5060
+ max-dn 200
+ max-pool 42
+ load 7841 sip78xx.11-5-1-18
+ tftp-path flash:
+ file text
+ create profile sync xxxxxxxxxxxx
+ ntp-server x.x.x.x  mode directedbroadcast
+ auto-register
+!
+license accept end user agreement
+username cisco privilege 15 secret cisco123
+!
+controller Cellular 0/2/0
+ lte sim data-profile 3 attach-profile 3 slot 0
+ lte modem link-recovery rssi onset-threshold -110
+ lte modem link-recovery monitor-timer 20
+ lte modem link-recovery wait-timer 10
+ lte modem link-recovery debounce-count 6
+!
+class-map match-all CMAP_VOICE_MEDIA
+ match dscp ef
+class-map match-all CMAP_VOICE_SIGNALING
+ match dscp af31
+class-map match-all CMAP_NETWORK_CONTROL
+ match dscp cs6 cs7
+!
+policy-map PMAP_WAN_QUEUING
+ class CMAP_VOICE_MEDIA
+  priority percent 30
+ class CMAP_VOICE_SIGNALING
+  bandwidth percent 5 
+ class CMAP_NETWORK_CONTROL
+  bandwidth percent 5 
+ class class-default
+  bandwidth percent 60 
+  random-detect dscp-based
+!
+policy-map PMAP_WAN_SHAPING
+ class class-default
+  shape average percent 100
+   service-policy PMAP_WAN_QUEUING
+!
+crypto logging session
+crypto logging ikev2
+!
+crypto ikev2 proposal IKEV2_PROPOSAL
+ encryption aes-cbc-256
+ integrity sha384
+ group 20
+!
+crypto ikev2 policy IKEV2_POLICY_COMM
+ match fvrf any
+ proposal IKEV2_PROPOSAL
+!
+crypto ikev2 keyring IKEV2_KEYRING
+ peer HUB
+  address 0.0.0.0
+  pre-shared-key local CISCO123
+  pre-shared-key remote CISCO123
+!
+crypto ikev2 profile IKEV2_PROFILE
+ match fvrf any
+ match identity remote address 0.0.0.0
+ authentication local pre-share
+ authentication remote pre-share
+ keyring local IKEV2_KEYRING
+ dpd 20 5 periodic
+!
+crypto ipsec transform-set IPSEC_XFORM 
+ mode tunnel
+!
+crypto ipsec profile IPSEC_PROFILE esp-aes 256 esp-sha-hmac
+ set transform-set IPSEC_XFORM
+ set ikev2-profile IKEV2_PROFILE
+! 
+interface Loopback0
+ ip address {{ data["addr"]["rtr"]["lb0"] }} 255.255.255.255
+ no shutdown
+!
+interface Tunnel100
+ description DMVPN OVER WIRELINE
+ ip add 192.168.1.{{ data["index"] + 1 }} 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp authentication DMVPN100
+ ip nhrp nhs 192.168.1.254 nbma 192.0.2.1 multicast
+ ip nhrp network-id 100
+ delay 100
+ tunnel source GigabitEthernet0/0/1
+ tunnel mode gre multipoint
+ tunnel key 100
+ tunnel protection ipsec profile IPSEC_PROFILE
+!
+interface Tunnel200
+ description DMVPN OVER CELLULAR
+ ip add 192.168.2.{{ data["index"] + 1 }} 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp authentication DMVPN200
+ ip nhrp nhs 192.168.2.254 nbma 192.0.2.1 multicast
+ ip nhrp network-id 200
+ delay 200
+ tunnel source GigabitEthernet0/0/2
+ tunnel mode gre multipoint
+ tunnel key 200
+ tunnel protection ipsec profile IPSEC_PROFILE
+!
+interface Tunnel300
+ description DMVPN OVER SATELLITE
+ ip add 192.168.3.{{ data["index"] + 1 }} 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp authentication DMVPN300
+ ip nhrp nhs 192.168.3.254 nbma 192.0.2.1 multicast
+ ip nhrp network-id 300
+ delay 300
+ tunnel source GigabitEthernet0/0/2
+ tunnel mode gre multipoint
+ tunnel key 300
+ tunnel protection ipsec profile IPSEC_PROFILE
+!
+interface GigabitEthernet0/0/0
+ description DISTRIBUTION SWITCH
+ negotiation auto
+ ip address 192.168.0.1 255.255.255.252
+ ip access-group ACL_INTERNET_IN in
+ ip access-group ACL_INTERNET_OUT out
+ no shutdown
+!
+interface GigabitEthernet0/0/1
+ description WIRELINE INTERNET
+ negotiation auto
+ vrf forwarding FVRF_WIRELINE
+ ip address dhcp
+ ip access-group ACL_INTERNET_IN in
+ ip access-group ACL_INTERNET_OUT out
+ service-policy output PMAP_WAN_SHAPING
+ no shutdown
+!
+interface GigabitEthernet0/0/2
+ description SATELLITE INTERNET
+ negotiation auto
+ vrf forwarding FVRF_SATELLITE
+ bandwidth 1024
+ no ip dhcp client request tftp-server-address
+ ip address dhcp
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip access-group ACL_INTERNET_IN in
+ ip access-group ACL_INTERNET_OUT out
+ ip tcp adjust-mss 1400
+ no cdp enable
+ service-policy output PMAP_WAN_SHAPING
+ no shutdown
+!
+interface Cellular0/2/0
+ bandwidth 2000
+ bandwidth receive 4000
+ vrf forwarding FVRF_CELLULAR
+ ip address negotiated
+ ip access-group INTERNET-IN in
+ ip access-group dnsblock out
+ dialer in-band
+ dialer-group 1
+ pulse-time 1
+ service-policy output WAN_QOS
+!
+interface Cellular0/2/1
+ description UNUSED
+ no ip address
+ shutdown
+!
+interface Service-Engine0/4/0
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ shutdown
+ negotiation auto
+!
+router eigrp MHK
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  af-interface Loopback0
+   passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 192.168.0.0 0.0.255.255
+  network {{ data["addr"]["rtr"]["lb0"] }} 0.0.0.0
+  metric weights 0 0 0 1 0 0 0
+!
+no ip forward-protocol nd
+no ip http server
+!
+ip route vrf FVRF_CELLULAR 0.0.0.0 0.0.0.0 Cellular0/2/0
+!
+ip ssh version 2
+ip scp server enable
+!
+ip access-list extended ACL_INTERNET_IN
+ remark ALLOW PING, IKE, DHCP, AND IPSEC
+ permit esp any any
+ permit udp any eq isakmp any
+ permit icmp any any echo
+ permit icmp any any echo-reply
+ permit udp any eq bootpc any eq bootps
+ deny   ip any any log
+!
+ip access-list extended ACL_INTERNET_OUT
+ remark ALLOW PING, IKE, DHCP, AND IPSEC
+ permit esp any any
+ permit udp any any eq isakmp
+ permit icmp any any echo
+ permit icmp any any echo-reply
+ permit udp any eq bootps any eq bootpc
+ deny   ip any any log
+!
+dialer watch-list 1 ip x.x.x.x  x.x.x.x 
+dialer watch-list 1 ip x.x.x.x  x.x.x.x 
+dialer watch-list 1 delay route-check initial 60
+dialer watch-list 1 delay connect 1
+dialer-list 1 protocol ip list 1
+!
+tftp-server flash bootflash:kern2.78xx.11-5-1-18.sbn
+tftp-server flash bootflash:kern78xx.11-5-1-18.sbn
+tftp-server flash bootflash:rootfs2.78xx.11-5-1-18.sbn
+tftp-server flash bootflash:rootfs78xx.11-5-1-18.sbn
+tftp-server flash bootflash:sboot2.78xx.11-5-1-18.sbn
+tftp-server flash bootflash:sboot78xx.11-5-1-18.sbn
+tftp-server flash bootflash:sip78xx.11-5-1-18.loads
+!
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+dial-peer voice 1 voip
+ destination-pattern 9.T
+ session protocol sipv2
+ session target ipv4:x.x.x.x 
+ incoming called-number .
+ voice-class codec 1  
+ voice-class sip dtmf-relay force rtp-nte
+ dtmf-relay rtp-nte
+ no vad
+!
+gateway 
+ timer receive-rtp 1200
+!
+sip-ua 
+ registrar 1 ipv4:x.x.x.x  expires 60
+ registrar 2 ipv4:x.x.x.x  expires 60
+ connection-reuse
+!
+banner motd %
+----------------------------------------------------------------------
+NOTICE TO USERS
+This is an official computer system and is the property of the
+ORGANIZATION. It is for authorized users only. Unauthorized users
+are prohibited. Users (authorized or unauthorized) have no explicit
+or implicit expectation of privacy. Any or all uses of this system
+may be subject to one or more of the following actions: interception,
+monitoring, recording, auditing, inspection and disclosing to security
+personnel and law enforcement personnel, as well as authorized
+officials of other agencies, both domestic and foreign. By using this
+system, the user consents to these actions. Unauthorized or improper
+use of this system may result in administrative disciplinary action
+and civil and criminal penalties. By accessing this system you
+indicate your awareness of and consent to these terms and conditions
+of use. Discontinue access immediately if you do not agree to the
+conditions stated in this notice.
+----------------------------------------------------------------------
+%
+!
+line con 0
+ exec-timeout 30 0
+ logging synchronous
+ login local
+ transport input none
+ stopbits 1
+line aux 0
+ no exec
+ transport input none
+line vty 0 4
+ exec-timeout 10 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+!
+ntp source Loopback0
+ntp master 4
+ntp server 192.0.2.1
+!
+end

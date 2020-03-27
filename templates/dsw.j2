@@ -1,0 +1,87 @@
+ip routing
+hostname DSW-{{ data["telephony_prefix"] }}
+vtp mode off
+spanning-tree vlan 1-4094 priority 0
+!
+vlan 10
+ name DATA
+vlan 20
+ name BIOMED
+vlan 30
+ name VOICE
+vlan 40
+ name MGMT
+vlan 50
+ name SPECIAL
+!
+{% for i in range(40) -%}
+interface GigabitEthernet1/0/{{ i+1 }}
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 20
+ spanning-tree portfast
+ no shutdown
+!
+{% endfor %}
+{% for i in range(40, 46) -%}
+interface GigabitEthernet1/0/{{ i+1 }}
+ description VLAN TRUNK
+ switchport mode trunk
+ switchport nonnegotiate
+ no shutdown
+!
+{% endfor %}
+interface GigabitEthernet1/0/47
+ description WLC
+ switchport mode trunk
+ switchport nonnegotiate
+ no shutdown
+!
+interface GigabitEthernet1/0/48
+ description ROUTER P2P
+ no switchport
+ ip address 192.168.0.2 255.255.255.252
+ no shutdown
+!
+interface Vlan10
+ description DATA VLAN
+ ip address {{ data["addr"]["dsw"]["data_svi10"] }} 255.255.254.0
+ no shutdown
+!
+interface Vlan20
+ description BIOMED VLAN
+ ip address {{ data["addr"]["dsw"]["biomed_svi20"] }} 255.255.255.192
+ no shutdown
+!
+interface Vlan30
+ description VOICE VLAN
+ ip address {{ data["addr"]["dsw"]["voice_svi30"] }} 255.255.255.192
+ no shutdown
+!
+interface Vlan40
+ description MGMT VLAN
+ ip address {{ data["addr"]["dsw"]["mgmt_svi40"] }} 255.255.255.224
+ no shutdown
+!
+interface Vlan50
+ description SPECIAL (EXCEPTIONS) VLAN
+ ip address {{ data["addr"]["dsw"]["special_svi50"] }} 255.255.255.224
+ no shutdown
+!
+router eigrp MHK
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  af-interface default
+   passive-interface
+  exit-af-interface
+  !
+  af-interface GigabitEthernet1/0/48
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 0.0.0.0
+  metric weights 0 0 0 1 0 0 0

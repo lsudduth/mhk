@@ -1,0 +1,75 @@
+hostname ASW1-{{ data["telephony_prefix"] }}
+no ip routing
+vtp mode off
+vlan 10
+ name DATA
+vlan 20
+ name BIOMED
+vlan 30
+ name VOICE
+vlan 40
+ name MGMT
+vlan 50
+ name SPECIAL
+!
+{% for i in range(44) -%}
+interface GigabitEthernet1/0/{{ i+1 }}
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 20
+ spanning-tree portfast
+ no shutdown
+!
+{% endfor %}
+{% for i in range(44, 48) -%}
+interface GigabitEthernet1/0/{{ i+1 }}
+ description VLAN TRUNK
+ switchport mode trunk
+ switchport nonnegotiate
+ no shutdown
+!
+{% endfor %}
+interface Vlan40
+ description MGMT VLAN
+ ip address {{ data["addr"]["asw1"]["mgmt_svi40"] }} 255.255.255.224
+ no shutdown
+!
+ip default-gateway {{ data["addr"]["dsw"]["mgmt_svi40"] }}
+no ip routing
+vtp mode off
+vlan 10
+ name DATA
+vlan 20
+ name BIOMED
+vlan 30
+ name VOICE
+vlan 40
+ name MGMT
+vlan 50
+ name SPECIAL
+!
+{% for i in range(44) -%}
+interface GigabitEthernet1/0/{{ i+1 }}
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 20
+ spanning-tree portfast
+ no shutdown
+!
+{% endfor %}
+{% for i in range(44, 48) -%}
+interface GigabitEthernet1/0/{{ i+1 }}
+ description VLAN TRUNK
+ switchport mode trunk
+ switchport nonnegotiate
+ no shutdown
+!
+{% endfor %}
+interface Vlan40
+ description MGMT VLAN
+ ip address {{ data["addr"]["asw1"]["mgmt_svi40"] }} 255.255.255.224
+ no shutdown
+!
+ip default-gateway {{ data["addr"]["dsw"]["mgmt_svi40"] }}
