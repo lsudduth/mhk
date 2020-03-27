@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/nickrusso42518/mhk.svg?branch=master)](https://travis-ci.com/nickrusso42518/mhk)
+
 # Cisco Mobile Hospitak Kit (MHK)
 Experimental script to build configurations for all devices in the kit.
 
