@@ -1,0 +1,335 @@
+version 15.6
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+!
+hostname RTR-2000
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition FVRF_CELLULAR
+ description FRONT DOOR VRF FOR CELLULAR INTERNET
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition FVRF_SATELLITE
+ description FRONT DOOR VRF FOR SATELLITE INTERNET
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition FVRF_WIRELINE
+ description FRONT DOOR VRF FOR WIRELINE INTERNET
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+!
+logging buffered 51200 informational
+enable secret 5 $1$i.0S$3GZYta3P1f1GnMUf1BrGA1
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name cisco.com
+ip cef
+login on-success log
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$1y9b$fYkdK/CMo7KVOw2.uqqsZ/
+!
+redundancy
+!
+no cdp log mismatch duplex
+!
+ip tcp synwait-time 5
+!
+class-map match-all CMAP_NETWORK_CONTROL
+ match dscp cs6  cs7
+class-map match-all CMAP_VOICE_MEDIA
+ match dscp ef
+class-map match-all CMAP_VOICE_SIGNALLING
+ match dscp af31
+!
+policy-map PMAP_WAN_QUEUING
+ class CMAP_VOICE_MEDIA
+  priority percent 30
+ class CMAP_VOICE_SIGNALLING
+  bandwidth percent 5
+ class CMAP_NETWORK_CONTROL
+  bandwidth percent 5
+ class class-default
+  bandwidth percent 60
+  random-detect dscp-based
+policy-map PMAP_WAN_SHAPING
+ class class-default
+  shape average percent 99
+   service-policy PMAP_WAN_QUEUING
+!
+!
+crypto logging session
+crypto logging ikev2
+!
+crypto ikev2 proposal IKEV2_PROPOSAL
+ encryption aes-cbc-256
+ integrity sha384
+ group 20
+!
+crypto ikev2 policy IKEV2_POLICY_COMM
+ match fvrf any
+ proposal IKEV2_PROPOSAL
+!
+crypto ikev2 keyring IKEV2_KEYRING
+ peer HUB
+  address 0.0.0.0 0.0.0.0
+  pre-shared-key local CISCO123
+  pre-shared-key remote CISCO123
+ !
+!
+!
+crypto ikev2 profile IKEV2_PROFILE
+ match fvrf any
+ match identity remote address 0.0.0.0
+ authentication local pre-share
+ authentication remote pre-share
+ keyring local IKEV2_KEYRING
+ dpd 20 5 periodic
+!
+!
+!
+crypto ipsec transform-set IPSEC_XFORM esp-aes 256 esp-sha-hmac
+ mode tunnel
+!
+crypto ipsec profile IPSEC_PROFILE
+ set transform-set IPSEC_XFORM
+ set ikev2-profile IKEV2_PROFILE
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 172.16.6.177 255.255.255.255
+!
+interface Tunnel100
+ description DMVPN OVER WIRELINE
+ ip address 192.168.1.2 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp authentication DMVPN100
+ ip nhrp network-id 100
+ ip nhrp nhs 192.168.1.254 nbma 192.0.2.1 multicast
+ delay 100
+ tunnel source Ethernet0/0
+ tunnel mode gre multipoint
+ tunnel key 100
+ tunnel vrf FVRF_WIRELINE
+ tunnel protection ipsec profile IPSEC_PROFILE
+!
+interface Tunnel200
+ description DMVPN OVER CELLULAR
+ ip address 192.168.2.2 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp authentication DMVPN200
+ ip nhrp network-id 200
+ ip nhrp nhs 192.168.2.254 nbma 192.0.2.1 multicast
+ delay 200
+ tunnel source Loopback0
+ tunnel mode gre multipoint
+ tunnel key 200
+ tunnel vrf FVRF_CELLULAR
+ tunnel protection ipsec profile IPSEC_PROFILE
+!
+interface Tunnel300
+ description DMVPN OVER SATELLITE
+ ip address 192.168.3.2 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp authentication DMVPN300
+ ip nhrp network-id 300
+ ip nhrp nhs 192.168.3.254 nbma 192.0.2.1 multicast
+ delay 300
+ tunnel source Ethernet0/2
+ tunnel mode gre multipoint
+ tunnel key 300
+ tunnel vrf FVRF_SATELLITE
+ tunnel protection ipsec profile IPSEC_PROFILE
+!
+interface Ethernet0/0
+ description WIRELINE INTERNET
+ vrf forwarding FVRF_WIRELINE
+ ip address dhcp
+ ip access-group ACL_INTERNET_IN in
+ service-policy output PMAP_WAN_SHAPING
+!
+interface Ethernet0/1
+ description DISTRIBUTION SWITCH
+ ip address 192.168.0.1 255.255.255.252
+ ip verify unicast source reachable-via rx
+!
+interface Ethernet0/2
+ description SATELLITE INTERNET
+ bandwidth 1024
+ vrf forwarding FVRF_SATELLITE
+ no ip dhcp client request tftp-server-address
+ ip address dhcp
+ ip access-group ACL_INTERNET_IN in
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no cdp enable
+ service-policy output PMAP_WAN_SHAPING
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+!
+router eigrp SHK
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  af-interface default
+   authentication mode hmac-sha-256 7 062326067E7E584B56
+  exit-af-interface
+  !
+  af-interface Loopback0
+   passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 172.16.6.177 0.0.0.0
+  network 192.168.0.0 0.0.255.255
+  metric weights 0 0 0 1 0 0 0
+ exit-address-family
+!
+no ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip scp server enable
+!
+ip access-list extended ACL_INTERNET_IN
+ remark ALLOW PING, IKE, DHCP, AND IPSEC
+ permit esp any any
+ permit udp any eq isakmp any
+ permit udp any any eq non500-isakmp
+ permit icmp any any echo
+ permit icmp any any echo-reply
+ permit udp any eq bootps any eq bootpc
+ deny   ip any any log
+!
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+banner motd ^C
+----------------------------------------------------------------------
+NOTICE TO USERS
+This is an official computer system and is the property of the
+ORGANIZATION. It is for authorized users only. Unauthorized users
+are prohibited. Users (authorized or unauthorized) have no explicit
+or implicit expectation of privacy. Any or all uses of this system
+may be subject to one or more of the following actions: interception,
+monitoring, recording, auditing, inspection and disclosing to security
+personnel and law enforcement personnel, as well as authorized
+officials of other agencies, both domestic and foreign. By using this
+system, the user consents to these actions. Unauthorized or improper
+use of this system may result in administrative disciplinary action
+and civil and criminal penalties. By accessing this system you
+indicate your awareness of and consent to these terms and conditions
+of use. Discontinue access immediately if you do not agree to the
+conditions stated in this notice.
+----------------------------------------------------------------------
+^C
+!
+line con 0
+ exec-timeout 30 0
+ privilege level 15
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ no exec
+line vty 0 4
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+!
+ntp authentication-key 1 md5 06283B111D1C5A 7
+ntp authenticate
+ntp trusted-key 1
+ntp source Loopback0
+ntp master 4
+ntp server 192.168.0.255 key 1
+!
+end

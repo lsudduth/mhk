@@ -1,0 +1,285 @@
+version 15.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+service compress-config
+!
+hostname DSW-2000
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging discriminator EXCESS severity drops 6 msg-body drops EXCESSCOLL
+logging buffered 50000
+logging console discriminator EXCESS
+!
+no aaa new-model
+!
+!
+!
+!
+!
+vtp mode off
+no ip icmp rate-limit unreachable
+!
+ip multicast-routing
+ip dhcp excluded-address 172.16.5.254
+ip dhcp excluded-address 172.16.6.62
+ip dhcp excluded-address 172.16.6.126
+ip dhcp excluded-address 172.16.6.174
+!
+ip dhcp pool DATA_VLAN10
+ network 172.16.4.0 255.255.254.0
+ default-router 172.16.5.254
+ option 43 hex 00f1.04ac.1006.81
+!
+ip dhcp pool BIOMED_VLAN20
+ network 172.16.6.0 255.255.255.192
+ default-router 172.16.6.62
+ option 43 hex 00f1.04ac.1006.81
+!
+ip dhcp pool VOICE_VLAN30
+ network 172.16.6.64 255.255.255.192
+ default-router 172.16.6.126
+ option 150 ip 172.16.6.177
+!
+ip dhcp pool SPECIAL_VLAN50
+ network 172.16.6.160 255.255.255.240
+ default-router 172.16.6.174
+ option 43 hex 00f1.04ac.1006.81
+!
+!
+ip dhcp snooping vlan 10,20,30,50
+no ip dhcp snooping information option
+ip dhcp snooping
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+spanning-tree vlan 1-4094 priority 0
+!
+!
+vlan 10
+ name DATA
+!
+vlan 20
+ name BIOMED
+!
+vlan 30
+ name VOICE
+!
+vlan 40
+ name MGMT
+!
+vlan 50
+ name SPECIAL
+no cdp run
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 172.16.6.178 255.255.255.255
+ ip pim sparse-mode
+!
+interface Ethernet0/0
+ description VLAN TRUNK
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface Ethernet0/1
+ description ROUTER P2P
+ no switchport
+ ip address 192.168.0.2 255.255.255.252
+ ip verify unicast source reachable-via rx
+!
+interface Ethernet0/2
+ description USER/VOICE
+ switchport access vlan 10
+ switchport mode access
+ switchport voice vlan 30
+ switchport port-security violation restrict
+ switchport port-security
+ spanning-tree portfast edge
+!
+interface Ethernet0/3
+ description WLC
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface Ethernet1/0
+!
+interface Ethernet1/1
+!
+interface Ethernet1/2
+!
+interface Ethernet1/3
+!
+interface Ethernet2/0
+!
+interface Ethernet2/1
+!
+interface Ethernet2/2
+!
+interface Ethernet2/3
+!
+interface Ethernet3/0
+!
+interface Ethernet3/1
+!
+interface Ethernet3/2
+!
+interface Ethernet3/3
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan10
+ description DATA VLAN
+ ip address 172.16.5.254 255.255.254.0
+ ip access-group ACL_DATA_IN in
+ ip pim sparse-mode
+ ip verify unicast source reachable-via rx
+!
+interface Vlan20
+ description BIOMED VLAN
+ ip address 172.16.6.62 255.255.255.192
+ ip access-group ACL_BIOMED_IN in
+ ip pim sparse-mode
+ ip verify unicast source reachable-via rx
+!
+interface Vlan30
+ description VOICE VLAN
+ ip address 172.16.6.126 255.255.255.192
+ ip access-group ACL_VOICE_IN in
+ ip verify unicast source reachable-via rx
+!
+interface Vlan40
+ description MGMT VLAN
+ ip address 172.16.6.158 255.255.255.224
+ ip access-group ACL_MGMT_IN in
+ ip verify unicast source reachable-via rx
+!
+interface Vlan50
+ description SPECIAL (EXCEPTIONS) VLAN
+ ip address 172.16.6.174 255.255.255.240
+ ip access-group ACL_SPECIAL_IN in
+ ip pim sparse-mode
+ ip verify unicast source reachable-via rx
+!
+!
+router eigrp SHK
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  af-interface default
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   summary-address 172.16.4.0 255.255.252.0
+   authentication mode hmac-sha-256 7 00213A21366B5A545C
+   no passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 0.0.0.0
+  metric weights 0 0 0 1 0 0 0
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip pim rp-address 172.16.6.178
+ip tcp synwait-time 5
+no ip http server
+no ip http secure-server
+!
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+ip access-list extended ACL_BIOMED_IN
+ permit ip any any
+ip access-list extended ACL_DATA_IN
+ permit ip any any
+ip access-list extended ACL_MGMT_IN
+ permit ip any any
+ip access-list extended ACL_SPECIAL_IN
+ permit ip any any
+ip access-list extended ACL_VOICE_IN
+ permit ip any any
+!
+!
+!
+!
+control-plane
+!
+banner motd ^C
+----------------------------------------------------------------------
+NOTICE TO USERS
+This is an official computer system and is the property of the
+hospital. It is for authorized users only. Unauthorized users
+are prohibited. Users (authorized or unauthorized) have no explicit
+or implicit expectation of privacy. Any or all uses of this system
+may be subject to one or more of the following actions: interception,
+monitoring, recording, auditing, inspection and disclosing to security
+personnel and law enforcement personnel, as well as authorized
+officials of other agencies, both domestic and foreign. By using this
+system, the user consents to these actions. Unauthorized or improper
+use of this system may result in administrative disciplinary action
+and civil and criminal penalties. By accessing this system you
+indicate your awareness of and consent to these terms and conditions
+of use. Discontinue access immediately if you do not agree to the
+conditions stated in this notice.
+----------------------------------------------------------------------
+^C
+!
+line con 0
+ exec-timeout 30 0
+ privilege level 15
+ logging synchronous
+ login local
+ transport preferred none
+ transport output none
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ no exec
+line vty 0 4
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+!
+ntp authentication-key 1 md5 032A6F3B575D72 7
+ntp authenticate
+ntp trusted-key 1
+ntp source Loopback0
+ntp server 172.16.6.177 key 1
+!
+!
+end
