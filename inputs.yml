@@ -2,8 +2,10 @@
 hub:
   dmvpn_source:
     interface: GigabitEthernet0/0/0
-    ipv4_addr: 192.0.2.1 255.255.255.0
-    ipv4_nhop: 192.0.2.2
+    ipv4:
+      addr: 192.0.2.1
+      netmask: 255.255.255.0
+      nhop: 192.0.2.2
   bgp:
     local_asn: 65001
     hospital_peer: 192.0.2.129

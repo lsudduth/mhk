@@ -145,7 +145,7 @@ interface Tunnel100
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN100
- ip nhrp nhs 192.168.1.254 nbma 192.0.2.1 multicast
+ ip nhrp nhs 192.168.1.254 nbma {{ data["hub"]["dmvpn_source"]["ipv4"]["addr"] }} multicast
  ip nhrp network-id 100
  delay 100
  tunnel source GigabitEthernet0/0/1
@@ -160,7 +160,7 @@ interface Tunnel200
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN200
- ip nhrp nhs 192.168.2.254 nbma 192.0.2.1 multicast
+ ip nhrp nhs 192.168.2.254 nbma {{ data["hub"]["dmvpn_source"]["ipv4"]["addr"] }} multicast
  ip nhrp network-id 200
  delay 200
  tunnel source GigabitEthernet0/0/2
@@ -175,7 +175,7 @@ interface Tunnel300
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN300
- ip nhrp nhs 192.168.3.254 nbma 192.0.2.1 multicast
+ ip nhrp nhs 192.168.3.254 nbma {{ data["hub"]["dmvpn_source"]["ipv4"]["addr"] }} multicast
  ip nhrp network-id 300
  delay 300
  tunnel source GigabitEthernet0/0/2

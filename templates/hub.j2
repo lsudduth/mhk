@@ -137,7 +137,7 @@ interface Ethernet0/0
 interface {{ data["dmvpn_source"]["interface"] }}
  description TO INTERNET
  vrf forwarding FVRF_INTERNET
- ip address {{ data["dmvpn_source"]["ipv4_addr"] }}  
+ ip address {{ data["dmvpn_source"]["ipv4"]["addr"] }} {{ data["dmvpn_source"]["ipv4"]["netmask"] }}
  service-policy output PMAP_WAN_SHAPING
  no shutdown
 !
@@ -149,7 +149,7 @@ interface Ethernet0/3
  no ip address
  shutdown
 !
-ip route vrf FVRF_INTERNET 0.0.0.0 0.0.0.0 {{ data["dmvpn_source"]["ipv4_nhop"] }} name INTERNET_DEFAULT
+ip route vrf FVRF_INTERNET 0.0.0.0 0.0.0.0 {{ data["dmvpn_source"]["ipv4"]["nhop"] }} name INTERNET_DEFAULT
 !
 router eigrp SHK
  !
