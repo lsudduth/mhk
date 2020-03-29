@@ -25,15 +25,24 @@ def main():
     if not os.path.exists("outputs"):
         os.makedirs("outputs")
 
+    # Only generate one hub config for the entire SHK run
+    j2_env = Environment(loader=FileSystemLoader("."), autoescape=True)
+    template = j2_env.get_template("templates/hub.j2")
+    config = template.render(data=initial["hub"])
+
+    # Write hub config to output directory (top level)
+    with open(f"outputs/hub.txt", "w") as handle:
+        handle.write(config)
+
+    # Collect all SHK template files once (not in loop)
+    template_files = glob.glob("templates/shk/*.j2")
+
     # Iterate over each node in the node_list with a counter
-    for i, node in enumerate(initial["node_list"]):
+    for i, node in enumerate(initial["shk"]):
         # Extract data for each node and update index with offset
         data = process_node(node)
         data["index"] = i + node["index_offset"]
-
-        # Build jinja2 environment
-        j2_env = Environment(loader=FileSystemLoader("."), autoescape=True)
-        template_files = glob.glob("templates/*.j2")
+        data["hub"] = initial["hub"]
 
         # Create per-node output subdirectory
         output_dir = f"outputs/{node['telephony_prefix']}"

@@ -1,9 +1,19 @@
 ---
-node_list:
+hub:
+  dmvpn_source:
+    interface: GigabitEthernet0/0/0
+    ipv4_addr: 192.0.2.1 255.255.255.0
+    ipv4_nhop: 192.0.2.2
+  bgp:
+    local_asn: 65001
+    hospital_peer: 192.0.2.129
+    hospital_asn: 65002
+
+shk:
   - telephony_prefix: 1000
     ipv4_network: 172.16.0.0/22
     index_offset: 0
   - telephony_prefix: 2000
     ipv4_network: 172.16.4.0/22
-    index_offset: 1
+    index_offset: 0
 ...
