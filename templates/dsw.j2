@@ -1,10 +1,19 @@
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+!
 ip routing
 ip multicast-routing
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50
 hostname DSW-{{ data["telephony_prefix"] }}
+ip domain-name shk.local
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
+spanning-tree mode rapid-pvst
 !
 vlan 10
  name DATA
@@ -16,6 +25,10 @@ vlan 40
  name MGMT
 vlan 50
  name SPECIAL
+!
+ip ssh version 2
+ip scp server enable
+crypto key generate rsa modulus 2048
 !
 ip dhcp excluded-address {{ data["addr"]["dsw"]["data_svi10"] }}
 ip dhcp pool DATA_VLAN10
@@ -43,7 +56,7 @@ ip dhcp pool SPECIAL_VLAN50
 !
 interface Loopback0
  ip address {{ data["addr"]["dsw"]["lb0"] }} 255.255.255.255
- im pim sparse-mode
+ ip pim sparse-mode
  no shutdown
 !
 ip pim rp-address {{ data["addr"]["dsw"]["lb0"] }}
@@ -64,14 +77,14 @@ interface GigabitEthernet1/0/{{ i+1 }}
 interface GigabitEthernet1/0/{{ i+1 }}
  description VLAN TRUNK
  switchport mode trunk
- switchport nonnegotiate
+ switchport nonegotiate
  no shutdown
 !
 {% endfor %}
 interface GigabitEthernet1/0/47
  description WLC
  switchport mode trunk
- switchport nonnegotiate
+ switchport nonegotiate
  no shutdown
 !
 interface GigabitEthernet1/0/48
@@ -131,7 +144,7 @@ interface Vlan50
  ip address {{ data["addr"]["dsw"]["special_svi50"] }} {{ data["subnets"]["special"].netmask }} 
  ip verify unicast source reachable-via rx
  ip access-group ACL_SPECIAL_IN in
- im pim sparse-mode
+ ip pim sparse-mode
  no shutdown
 !
 router eigrp SHK
@@ -145,6 +158,7 @@ router eigrp SHK
   af-interface GigabitEthernet1/0/48
    no passive-interface
    authentication mode hmac-sha-256 EIGRP123
+   summary-address {{ data["subnets"]["full"].with_netmask.replace("/", " ") }}
   exit-af-interface
   !
   topology base
@@ -176,7 +190,7 @@ line con 0
  exec-timeout 30 0
  logging synchronous
  login local
- transport input none
+ transport preferred none
  stopbits 1
 line aux 0
  no exec
@@ -189,6 +203,10 @@ line vty 0 4
  transport input ssh
  transport output ssh
 !
-ntp server {{ data["addr"]["rtr"]["lb0"] }}
+ntp source Loopback0
+ntp authenticate
+ntp authentication-key 1 md5 NTP123
+ntp trusted-key 1
+ntp server {{ data["addr"]["rtr"]["lb0"] }} key 1
 !
 end

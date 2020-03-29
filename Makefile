@@ -11,7 +11,7 @@ lint:
 
 .PHONY: run
 run:
-	python build_mhk.py
+	python build_shk.py
 
 .PHONY: clean
 clean:

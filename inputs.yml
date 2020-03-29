@@ -5,5 +5,5 @@ node_list:
     index_offset: 0
   - telephony_prefix: 2000
     ipv4_network: 172.16.4.0/22
-    index_offset: 20
+    index_offset: 1
 ...

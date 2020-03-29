@@ -7,6 +7,8 @@ service timestamps log datetime msec localtime
 service password-encryption
 !
 hostname RTR-{{ data["telephony_prefix"] }}
+ip domain-name shk.local
+!
 !
 boot-start-marker
 boot-end-marker
@@ -126,10 +128,10 @@ crypto ikev2 profile IKEV2_PROFILE
  keyring local IKEV2_KEYRING
  dpd 20 5 periodic
 !
-crypto ipsec transform-set IPSEC_XFORM 
+crypto ipsec transform-set IPSEC_XFORM esp-aes 256 esp-sha-hmac
  mode tunnel
 !
-crypto ipsec profile IPSEC_PROFILE esp-aes 256 esp-sha-hmac
+crypto ipsec profile IPSEC_PROFILE
  set transform-set IPSEC_XFORM
  set ikev2-profile IKEV2_PROFILE
 ! 
@@ -149,6 +151,7 @@ interface Tunnel100
  tunnel source GigabitEthernet0/0/1
  tunnel mode gre multipoint
  tunnel key 100
+ tunnel vrf FVRF_WIRELINE
  tunnel protection ipsec profile IPSEC_PROFILE
 !
 interface Tunnel200
@@ -163,6 +166,7 @@ interface Tunnel200
  tunnel source GigabitEthernet0/0/2
  tunnel mode gre multipoint
  tunnel key 200
+ tunnel vrf FVRF_CELLULAR
  tunnel protection ipsec profile IPSEC_PROFILE
 !
 interface Tunnel300
@@ -177,6 +181,7 @@ interface Tunnel300
  tunnel source GigabitEthernet0/0/2
  tunnel mode gre multipoint
  tunnel key 300
+ tunnel vrf FVRF_SATELLITE
  tunnel protection ipsec profile IPSEC_PROFILE
 !
 interface GigabitEthernet0/0/0
@@ -190,9 +195,14 @@ interface GigabitEthernet0/0/1
  description WIRELINE INTERNET
  negotiation auto
  vrf forwarding FVRF_WIRELINE
+ bandwidth 10000
+ no ip dhcp client request tftp-server-address
  ip address dhcp
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
  ip access-group ACL_INTERNET_IN in
- ip access-group ACL_INTERNET_OUT out
+ no cdp enable
  service-policy output PMAP_WAN_SHAPING
  no shutdown
 !
@@ -207,8 +217,6 @@ interface GigabitEthernet0/0/2
  no ip unreachables
  no ip proxy-arp
  ip access-group ACL_INTERNET_IN in
- ip access-group ACL_INTERNET_OUT out
- ip tcp adjust-mss 1400
  no cdp enable
  service-policy output PMAP_WAN_SHAPING
  no shutdown
@@ -219,7 +227,6 @@ interface Cellular0/2/0
  vrf forwarding FVRF_CELLULAR
  ip address negotiated
  ip access-group ACL_INTERNET_IN in
- ip access-group ACL_INTERNET_OUT out
  dialer in-band
  dialer-group 1
  pulse-time 1
@@ -262,20 +269,13 @@ ip route vrf FVRF_CELLULAR 0.0.0.0 0.0.0.0 Cellular0/2/0
 !
 ip ssh version 2
 ip scp server enable
+crypto key generate rsa modulus 2048
 !
 ip access-list extended ACL_INTERNET_IN
  remark ALLOW PING, IKE, DHCP, AND IPSEC
  permit esp any any
  permit udp any eq isakmp any
- permit icmp any any echo
- permit icmp any any echo-reply
- permit udp any eq bootpc any eq bootps
- deny   ip any any log
-!
-ip access-list extended ACL_INTERNET_OUT
- remark ALLOW PING, IKE, DHCP, AND IPSEC
- permit esp any any
- permit udp any any eq isakmp
+ permit udp any any eq non500-isakmp
  permit icmp any any echo
  permit icmp any any echo-reply
  permit udp any eq bootps any eq bootpc
@@ -345,7 +345,7 @@ line con 0
  exec-timeout 30 0
  logging synchronous
  login local
- transport input none
+ transport preferred none
  stopbits 1
 line aux 0
  no exec
@@ -358,8 +358,11 @@ line vty 0 4
  transport input ssh
  transport output ssh
 !
-ntp source Loopback0
 ntp master 4
-ntp server 192.168.0.255
+ntp source Loopback0
+ntp authenticate
+ntp authentication-key 1 md5 06283B111D1C5A 7
+ntp trusted-key 1
+ntp server 192.168.0.255 key 1
 !
 end

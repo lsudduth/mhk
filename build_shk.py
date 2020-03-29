@@ -66,6 +66,7 @@ def process_node(node):
 
     # Perform subnetting to collect each individual subnet
     subnets = {
+        "full": network,
         "data": first,
         "biomed": list(second.subnets(prefixlen_diff=3))[0],
         "voice": list(second.subnets(prefixlen_diff=3))[1],
