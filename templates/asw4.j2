@@ -9,6 +9,7 @@ hostname ASW4-{{ data["telephony_prefix"] }}
 ip domain-name shk.local
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50
+no dhcp snooping information option
 no ip routing
 !
 spanning-tree mode rapid-pvst
@@ -33,9 +34,10 @@ interface GigabitEthernet1/0/{{ i+1 }}
  description USER/VOICE
  switchport mode access
  switchport access vlan 10
- switchport voice vlan 20
+ switchport voice vlan 30
  switchport port-security
  switchport port-security violation restrict
+ switchport port-security maximum 2
  spanning-tree portfast
  no shutdown
 !
