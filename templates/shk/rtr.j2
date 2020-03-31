@@ -41,6 +41,19 @@ no aaa new-model
 ip domain name cisco.com
 login on-success log
 !
+!
+!!! REPLACE !!!
+{% set tel = data["telephony_prefix"] -%}
+!!! ward hunt = {{ tel }}01
+!!! admin hunt = {{ tel }}02
+!!! hunt range = {{ tel }}03 - {{ tel }}09
+!!! audio page = {{ tel }}10
+!!! autoreg range = {{ tel }}11 - {{ tel }}49
+!!! conf phone = {{ tel }}50
+!!! admin phone = {{ tel }}51 - {{ tel }}60
+!!! manual range = {{ tel }}60 - {{ tel }}99
+!!! REPLACE !!!
+!
 voice service voip
  ip address trusted list
   ipv4 x.x.x.x  x.x.x.x 
@@ -326,7 +339,7 @@ banner motd %
 ----------------------------------------------------------------------
 NOTICE TO USERS
 This is an official computer system and is the property of the
-ORGANIZATION. It is for authorized users only. Unauthorized users
+hospital. It is for authorized users only. Unauthorized users
 are prohibited. Users (authorized or unauthorized) have no explicit
 or implicit expectation of privacy. Any or all uses of this system
 may be subject to one or more of the following actions: interception,
