@@ -8,6 +8,8 @@ service password-encryption
 !
 hostname RTR-{{ data["telephony_prefix"] }}
 ip domain-name shk.local
+username cisco privilege 15 secret cisco
+enable secret cisco
 !
 !
 boot-start-marker
@@ -70,7 +72,6 @@ voice register global
  auto-register
 !
 license accept end user agreement
-username cisco privilege 15 secret cisco123
 !
 controller Cellular 0/2/0
  lte sim data-profile 3 attach-profile 3 slot 0

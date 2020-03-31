@@ -7,6 +7,8 @@ service password-encryption
 !
 hostname ASW3-{{ data["telephony_prefix"] }}
 ip domain-name shk.local
+username cisco privilege 15 secret cisco
+enable secret cisco
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option

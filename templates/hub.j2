@@ -7,7 +7,8 @@ service password-encryption
 !
 hostname HUB
 ip domain-name shk.local
-username cisco privilege 15 secret cisco123
+username cisco privilege 15 secret cisco
+enable secret cisco
 !
 vrf definition FVRF_INTERNET
  description FRONT DOOR VRF FOR GENERAL INTERNET

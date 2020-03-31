@@ -12,6 +12,8 @@ ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option
 hostname DSW-{{ data["telephony_prefix"] }}
 ip domain-name shk.local
+username cisco privilege 15 secret cisco
+enable secret cisco
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
 spanning-tree mode rapid-pvst
