@@ -1,3 +1,7 @@
 hostname SHK-{{ data["telephony_prefix"] }}-WLC
 
-ip address {{ data["addr"]["wlc"]["mgmt"] }} {{ data["subnets"]["mgmt"].netmask }}
+data {{ data["addr"]["wlc"]["data_svi10"] }} {{ data["subnets"]["data"].netmask }}
+biomed {{ data["addr"]["wlc"]["biomed_svi20"] }} {{ data["subnets"]["biomed"].netmask }}
+voice {{ data["addr"]["wlc"]["voice_svi30"] }} {{ data["subnets"]["voice"].netmask }}
+mgmt {{ data["addr"]["wlc"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }}
+special {{ data["addr"]["wlc"]["special_svi50"] }} {{ data["subnets"]["special"].netmask }}

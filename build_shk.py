@@ -109,14 +109,18 @@ def process_node(node):
             "special_svi50": subnets["special"][-2],
         },
         "wlc": {
-            "mgmt": subnets["mgmt"][1],
-            "mgmt_hex": hex(int(subnets["mgmt"][1]))[2:].upper(),
+            "data_svi10": subnets["data"][-6],
+            "biomed_svi20": subnets["biomed"][-6],
+            "voice_svi30": subnets["voice"][-6],
+            "mgmt_svi40": subnets["mgmt"][-6],
+            "mgmt_svi40_hex": hex(int(subnets["mgmt"][-6]))[2:].upper(),
+            "special_svi50": subnets["special"][-6],
         },
-        "asw1": {"mgmt_svi40": subnets["mgmt"][5]},
-        "asw2": {"mgmt_svi40": subnets["mgmt"][6]},
-        "asw3": {"mgmt_svi40": subnets["mgmt"][7]},
-        "asw4": {"mgmt_svi40": subnets["mgmt"][8]},
-        "asw5": {"mgmt_svi40": subnets["mgmt"][9]},
+        "asw1": {"mgmt_svi40": subnets["mgmt"][3]},
+        "asw2": {"mgmt_svi40": subnets["mgmt"][4]},
+        "asw3": {"mgmt_svi40": subnets["mgmt"][5]},
+        "asw4": {"mgmt_svi40": subnets["mgmt"][6]},
+        "asw5": {"mgmt_svi40": subnets["mgmt"][7]},
     }
 
     # Update data dict with new data, then return it

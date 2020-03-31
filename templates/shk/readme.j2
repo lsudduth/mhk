@@ -1,0 +1,6 @@
+{% for device, addrs in data["addr"].items() -%}
+Addressing on {{ device }}
+{% for intf, ip in addrs.items() -%}
+- {{ intf }}: {{ ip }}
+{% endfor %}
+{% endfor %}
