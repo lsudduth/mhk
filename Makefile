@@ -17,3 +17,4 @@ run:
 clean:
 	find . -name "*.pyc" | xargs -r rm
 	rm -rf outputs/
+	rm -f *.zip

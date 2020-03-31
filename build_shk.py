@@ -8,6 +8,7 @@ Purpose: Build a new Surge Hospital Kit (SHK) configuration set.
 import ipaddress
 import glob
 import os
+from zipfile import ZipFile
 from yaml import safe_load
 from jinja2 import Environment, FileSystemLoader
 
@@ -60,6 +61,18 @@ def main():
             output_file = os.path.basename(template_file).split(".")[0]
             with open(f"{output_dir}/{output_file}.txt", "w") as handle:
                 handle.write(config)
+
+    # Build output zip file
+    create_zip("outputs")
+
+
+def create_zip(path_to_zip):
+    """
+    Create ZIP archive of entire outputs/ directory for easy transporation.
+    """
+    with ZipFile("shk_configs.zip", "w") as handle:
+        for filename in glob.glob(f"{path_to_zip}/**", recursive=True):
+            handle.write(filename)
 
 
 def process_node(node):

@@ -56,3 +56,6 @@ outputs/
 |   `-- wlc.txt
 `-- hub.txt
 ```
+
+There is also a `shk_configs.zip` file that is automatically created as
+an additional artifact from the script. This improves config portability.
