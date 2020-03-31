@@ -10,7 +10,7 @@ ip multicast-routing
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option
-hostname DSW-{{ data["telephony_prefix"] }}
+hostname SHK-{{ data["telephony_prefix"] }}-DSW
 ip domain-name shk.local
 username cisco privilege 15 secret cisco
 enable secret cisco

@@ -5,7 +5,7 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
-hostname ASW5-{{ data["telephony_prefix"] }}
+hostname SHK-{{ data["telephony_prefix"] }}-ASW5
 ip domain-name shk.local
 username cisco privilege 15 secret cisco
 enable secret cisco
