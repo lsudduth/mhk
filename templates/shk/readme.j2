@@ -1,5 +1,12 @@
+Telephony prefix: {{ data["telephony_prefix"] }}
+
+Subnets:
+{% for name, prefix in data["subnets"].items() -%}
+- {{ name }}: {{ prefix }}
+{% endfor %}
+
 {% for device, addrs in data["addr"].items() -%}
-Addressing on {{ device }}
+Addressing on {{ device }}:
 {% for intf, ip in addrs.items() -%}
 - {{ intf }}: {{ ip }}
 {% endfor %}

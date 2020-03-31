@@ -7,7 +7,9 @@ After running the script, the `telephony_prefix` specified for each
 node definition is represented by a subdirectory in `outputs/`. Within
 that subdirectory are the configuration files in a given SHK. There is
 one hub per hospital that aggregates SHK connections, so there is no
-need for a list-like structure for input data.
+need for a list-like structure for input data. Each kit also have a
+basic `readme.txt` output file that reflects back important data,
+such as the telephony prefix, subnets, and individual IP addresses.
 
 Given this `inputs.yml` file:
 ```
@@ -23,12 +25,12 @@ hub:
     hospital_asn: 65002
 
 node_list:
-  - telephony_prefix: 1000
+  - telephony_prefix: 101
     ipv4_network: 172.16.0.0/22
     index_offset: 0
-  - telephony_prefix: 2000
+  - telephony_prefix: 102
     ipv4_network: 172.16.4.0/22
-    index_offset: 20
+    index_offset: 0
 ...
 ```
 
@@ -36,22 +38,24 @@ You will see this result in the file system:
 ```
 $ tree outputs/
 outputs/
-|-- 1000
+|-- 101
 |   |-- asw1.txt
 |   |-- asw2.txt
 |   |-- asw3.txt
 |   |-- asw4.txt
 |   |-- asw5.txt
 |   |-- dsw.txt
+|   |-- readme.txt
 |   |-- rtr.txt
 |   `-- wlc.txt
-|-- 2000
+|-- 102
 |   |-- asw1.txt
 |   |-- asw2.txt
 |   |-- asw3.txt
 |   |-- asw4.txt
 |   |-- asw5.txt
 |   |-- dsw.txt
+|   |-- readme.txt
 |   |-- rtr.txt
 |   `-- wlc.txt
 `-- hub.txt

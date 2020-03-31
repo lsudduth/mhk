@@ -37,13 +37,13 @@ ip dhcp excluded-address {{ data["addr"]["dsw"]["data_svi10"] - 4 }} {{ data["ad
 ip dhcp pool DATA_VLAN10
  network {{ data["subnets"]["data"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["data_svi10"] }}
- option 43 hex 00F104{{ data["addr"]["wlc"]["mgmt_hex"] }}
+ option 43 hex F104{{ data["addr"]["wlc"]["mgmt_svi40_hex"] }}
 !
 ip dhcp excluded-address {{ data["addr"]["dsw"]["biomed_svi20"] - 4 }} {{ data["addr"]["dsw"]["biomed_svi20"] }}
 ip dhcp pool BIOMED_VLAN20
  network {{ data["subnets"]["biomed"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["biomed_svi20"] }}
- option 43 hex 00F104{{ data["addr"]["wlc"]["mgmt_hex"] }}
+ option 43 hex F104{{ data["addr"]["wlc"]["mgmt_svi40_hex"] }}
 !
 ip dhcp excluded-address {{ data["addr"]["dsw"]["voice_svi30"] - 4 }} {{ data["addr"]["dsw"]["voice_svi30"] }}
 ip dhcp pool VOICE_VLAN30
@@ -55,7 +55,7 @@ ip dhcp excluded-address {{ data["addr"]["dsw"]["special_svi50"] - 4 }} {{ data[
 ip dhcp pool SPECIAL_VLAN50
  network {{ data["subnets"]["special"].with_netmask.replace("/", " ") }}
  default-router {{ data["addr"]["dsw"]["special_svi50"] }}
- option 43 hex 00F104{{ data["addr"]["wlc"]["mgmt_hex"] }}
+ option 43 hex F104{{ data["addr"]["wlc"]["mgmt_svi40_hex"] }}
 !
 interface Loopback0
  ip address {{ data["addr"]["dsw"]["lb0"] }} 255.255.255.255
