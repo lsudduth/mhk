@@ -1,4 +1,19 @@
-Telephony prefix: {{ data["telephony_prefix"] }}
+login username: cisco
+login password: cisco
+enable password: cisco
+
+{% set tel = data["telephony_prefix"] -%}
+3-digit telephony prefix: {{ tel }}
+-------------------------------
+tui = {{ tel }}00
+ward hunt = {{ tel }}01
+admin hunt = {{ tel }}02
+hunt range = {{ tel }}03 - {{ tel }}09
+audio page = {{ tel }}10
+autoreg range = {{ tel }}11 - {{ tel }}49
+conf phone = {{ tel }}50
+admin phone = {{ tel }}51 - {{ tel }}60
+manual range = {{ tel }}61 - {{ tel }}99
 
 Subnets:
 {% for name, prefix in data["subnets"].items() -%}
@@ -10,4 +25,9 @@ Addressing on {{ device }}:
 {% for intf, ip in addrs.items() -%}
 - {{ intf }}: {{ ip }}
 {% endfor %}
+{% endfor %}
+
+WLANs (SSID and PSK):
+{% for name, wlan in data["wlan"].items() -%}
+- {{ name }}: {{ wlan["ssid"] }} / {{ wlan["psk"] }}
 {% endfor %}

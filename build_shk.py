@@ -5,6 +5,8 @@ Author: Nick Russo (nickrus@cisco.com)
 Purpose: Build a new Surge Hospital Kit (SHK) configuration set.
 """
 
+import random
+import string
 import ipaddress
 import glob
 import os
@@ -123,15 +125,33 @@ def process_node(node):
         "asw5": {"mgmt_svi40": subnets["mgmt"][7]},
     }
 
+    # Assemble WLANs with SSID names and random plain-text PSKs
+    ssid_prefix = f"SHK-WLC-{node['telephony_prefix']}"
+    wlan = {
+        "data": {"ssid": f"{ssid_prefix}-DATA", "psk": generate_psk()},
+        "biomed": {"ssid": f"{ssid_prefix}-BIOMED", "psk": generate_psk()},
+        "voice": {"ssid": f"{ssid_prefix}-VOICE", "psk": generate_psk()},
+    }
+
     # Update data dict with new data, then return it
     data.update(
         {
             "subnets": subnets,
             "telephony_prefix": node["telephony_prefix"],
             "addr": addr,
+            "wlan": wlan,
         }
     )
     return data
+
+
+def generate_psk(psk_length=8):
+    """
+    Generate a random alphanumeric string of fixed length.
+    Assumes 8 characters by default.
+    """
+    letters = string.ascii_letters + string.digits
+    return "".join(random.choice(letters) for i in range(psk_length))
 
 
 if __name__ == "__main__":

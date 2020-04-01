@@ -5,3 +5,7 @@ biomed {{ data["addr"]["wlc"]["biomed_svi20"] }} {{ data["subnets"]["biomed"].ne
 voice {{ data["addr"]["wlc"]["voice_svi30"] }} {{ data["subnets"]["voice"].netmask }}
 mgmt {{ data["addr"]["wlc"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }}
 special {{ data["addr"]["wlc"]["special_svi50"] }} {{ data["subnets"]["special"].netmask }}
+
+data wlan {{ data["wlan"]["data"]["ssid"] }} {{ data["wlan"]["data"]["psk"] }}
+biomed wlan {{ data["wlan"]["biomed"]["ssid"] }} {{ data["wlan"]["biomed"]["psk"] }}
+voice wlan {{ data["wlan"]["voice"]["ssid"] }} {{ data["wlan"]["voice"]["psk"] }}

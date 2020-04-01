@@ -80,13 +80,16 @@ interface GigabitEthernet1/0/{{ i+1 }}
 {% for i in range(40, 46) -%}
 interface GigabitEthernet1/0/{{ i+1 }}
  description VLAN TRUNK
+ switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk native vlan 10
  switchport nonegotiate
  no shutdown
 !
 {% endfor %}
 interface GigabitEthernet1/0/47
  description WLC
+ switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport nonegotiate
  no shutdown

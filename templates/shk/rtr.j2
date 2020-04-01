@@ -1,3 +1,4 @@
+{% set tel = data["telephony_prefix"] -%}
 version 16.6
 no service pad
 service tcp-keepalives-in
@@ -6,7 +7,7 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
-hostname SHK-{{ data["telephony_prefix"] }}-RTR
+hostname SHK-{{ tel }}-RTR
 ip domain-name shk.local
 username cisco privilege 15 secret cisco
 enable secret cisco
@@ -35,7 +36,6 @@ vrf definition FVRF_SATELLITE
  exit-address-family
 !
 logging buffered 51200 informational
-enable secret cisco123
 !
 no aaa new-model
 ip domain name cisco.com
@@ -43,7 +43,7 @@ login on-success log
 !
 !
 !!! REPLACE !!!
-{% set tel = data["telephony_prefix"] -%}
+!!! tui = {{ tel }}00
 !!! ward hunt = {{ tel }}01
 !!! admin hunt = {{ tel }}02
 !!! hunt range = {{ tel }}03 - {{ tel }}09
