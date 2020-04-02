@@ -11,7 +11,7 @@ ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option
 hostname SHK-{{ data["telephony_prefix"] }}-DSW
-ip domain-name shk.local
+ip domain-name {{ data["domain_name"] }}
 username cisco privilege 15 secret cisco
 enable secret cisco
 vtp mode off

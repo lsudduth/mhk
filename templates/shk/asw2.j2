@@ -6,7 +6,7 @@ service timestamps log datetime msec localtime
 service password-encryption
 !
 hostname SHK-{{ data["telephony_prefix"] }}-ASW2
-ip domain-name shk.local
+ip domain-name {{ data["domain_name"] }}
 username cisco privilege 15 secret cisco
 enable secret cisco
 ip dhcp snooping

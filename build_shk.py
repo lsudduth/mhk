@@ -136,8 +136,10 @@ def process_node(node):
     # Update data dict with new data, then return it
     data.update(
         {
-            "subnets": subnets,
             "telephony_prefix": node["telephony_prefix"],
+            "dmvpn_target": node["dmvpn_target"],
+            "domain_name": node["domain_name"],
+            "subnets": subnets,
             "addr": addr,
             "wlan": wlan,
         }

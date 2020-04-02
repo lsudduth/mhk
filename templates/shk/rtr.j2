@@ -8,7 +8,6 @@ service timestamps log datetime msec localtime
 service password-encryption
 !
 hostname SHK-{{ tel }}-RTR
-ip domain-name shk.local
 username cisco privilege 15 secret cisco
 enable secret cisco
 !
@@ -34,6 +33,12 @@ vrf definition FVRF_SATELLITE
  description FRONT DOOR VRF FOR SATELLITE INTERNET
  address-family ipv4
  exit-address-family
+!
+ip domain-name {{ data["domain_name"] }}
+ip domain-lookup
+ip domain list vrf FVRF_WIRELINE {{ data["domain_name"] }}
+ip domain list vrf FVRF_CELLULAR {{ data["domain_name"] }}
+ip domain list vrf FVRF_SATELLITE {{ data["domain_name"] }}
 !
 logging buffered 51200 informational
 !
@@ -160,7 +165,7 @@ interface Tunnel100
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN100
- ip nhrp nhs 192.168.1.254 nbma {{ data["hub"]["dmvpn_source"]["ipv4"]["addr"] }} multicast
+ ip nhrp nhs 192.168.1.254 nbma {{ data["dmvpn_target"] }} multicast
  ip nhrp network-id 100
  delay 100
  tunnel source GigabitEthernet0/0/1
@@ -175,7 +180,7 @@ interface Tunnel200
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN200
- ip nhrp nhs 192.168.2.254 nbma {{ data["hub"]["dmvpn_source"]["ipv4"]["addr"] }} multicast
+ ip nhrp nhs 192.168.2.254 nbma {{ data["dmvpn_target"] }} multicast
  ip nhrp network-id 200
  delay 200
  tunnel source GigabitEthernet0/0/2
@@ -190,7 +195,7 @@ interface Tunnel300
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN300
- ip nhrp nhs 192.168.3.254 nbma {{ data["hub"]["dmvpn_source"]["ipv4"]["addr"] }} multicast
+ ip nhrp nhs 192.168.3.254 nbma {{ data["dmvpn_target"] }} multicast
  ip nhrp network-id 300
  delay 300
  tunnel source GigabitEthernet0/0/2
@@ -294,6 +299,7 @@ ip access-list extended ACL_INTERNET_IN
  permit icmp any any echo
  permit icmp any any echo-reply
  permit udp any eq bootps any eq bootpc
+ permit udp any eq domain any
  deny   ip any any log
 !
 dialer watch-list 1 ip x.x.x.x  x.x.x.x 

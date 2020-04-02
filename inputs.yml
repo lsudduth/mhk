@@ -14,8 +14,12 @@ hub:
 shk:
   - telephony_prefix: 101
     ipv4_network: 172.16.0.0/22
+    domain_name: hospital.com
+    dmvpn_target: shkhub.hospital.com
     index_offset: 0
   - telephony_prefix: 102
     ipv4_network: 172.16.4.0/22
+    domain_name: hospital.com
+    dmvpn_target: 192.0.2.1
     index_offset: 0
 ...

@@ -2,6 +2,9 @@ login username: cisco
 login password: cisco
 enable password: cisco
 
+domain name: {{ data["domain_name"] }}
+dmvpn target: {{ data["dmvpn_target"] }}
+
 {% set tel = data["telephony_prefix"] -%}
 3-digit telephony prefix: {{ tel }}
 -------------------------------
