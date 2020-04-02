@@ -126,7 +126,7 @@ def process_node(node):
     }
 
     # Assemble WLANs with SSID names and random plain-text PSKs
-    ssid_prefix = f"SHK-WLC-{node['telephony_prefix']}"
+    ssid_prefix = f"SHK-{node['telephony_prefix']}"
     wlan = {
         "data": {"ssid": f"{ssid_prefix}-DATA", "psk": generate_psk()},
         "biomed": {"ssid": f"{ssid_prefix}-BIOMED", "psk": generate_psk()},
