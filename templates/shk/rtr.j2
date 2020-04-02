@@ -357,7 +357,7 @@ voice hunt-group 1 parallel
  {{ tel }}{{ i }}{{ "," if not loop.last }}
  {%- endfor %}
  timeout 60 
- pilot 10101 
+ pilot {{ tel }}01 
 !
 voice hunt-group 2 parallel
  final {{ tel }}50
@@ -365,7 +365,7 @@ voice hunt-group 2 parallel
  {{ tel }}{{ i }}{{ "," if not loop.last }}
  {%- endfor %}
  timeout 60 
- pilot 10102 
+ pilot {{ tel }}02 
 !
 application
  service EA flash:/app-cme-ea-2.0.0.0/app-cme-ea-2.0.0.0.tcl
@@ -383,6 +383,7 @@ telephony-service
  transfer-system full-consult
 !
 dial-peer voice 1 voip
+ description CALLS TO PSTN
  destination-pattern 9.T
  session protocol sipv2
  session target ipv4:192.168.0.255
@@ -393,6 +394,17 @@ dial-peer voice 1 voip
  no vad
 !
 dial-peer voice 2 voip
+ description CALLS TO HOSPITAL PBX
+ destination-pattern 8.T
+ session protocol sipv2
+ session target ipv4:192.168.0.255
+ voice-class codec 1
+ voice-class sip dtmf-relay force rtp-nte
+ dtmf-relay rtp-nte
+ no vad
+!
+dial-peer voice 3 voip
+ description KIT TO KIT CALLS
  destination-pattern [1-7]....
  session protocol sipv2
  session target ipv4:192.168.0.255
@@ -401,9 +413,20 @@ dial-peer voice 2 voip
  dtmf-relay rtp-nte
  no vad
 !
+dial-peer voice 4 voip
+ description DISCONNECTED PHONE BLACKHOLE
+ destination-pattern {{ tel }}..
+ session protocol sipv2
+ session target ipv4:{{ data["addr"]["rtr"]["lb0"] }}
+ voice-class codec 1
+ voice-class sip dtmf-relay force rtp-nte
+ dtmf-relay rtp-nte
+ no vad
+!
 dial-peer voice 100 voip
+ description TELEPHONY USER INTERFACE (TUI)
  service extensionassigner out-bound
- destination-pattern 10100
+ destination-pattern {{ tel }}00
  session protocol sipv2
  session target ipv4:{{ data["addr"]["rtr"]["lb0"] }}
  dtmf-relay rtp-nte

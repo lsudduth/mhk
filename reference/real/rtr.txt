@@ -7,8 +7,8 @@ service timestamps log datetime msec localtime
 service password-encryption
 !
 hostname SHK-101-RTR
-username cisco privilege 15 secret cisco
-enable secret cisco
+username SHK-101-ADMIN privilege 15 secret SHK-101-PASSWORD
+enable secret SHK-101-PASSWORD
 !
 boot-start-marker
 boot-end-marker
@@ -41,7 +41,6 @@ ip domain list vrf FVRF_SATELLITE hospital.com
 logging buffered 51200 informational
 !
 no aaa new-model
-ip domain name cisco.com
 login on-success log
 !
 license accept end user agreement
@@ -324,7 +323,7 @@ voice register global
  max-pool 110
  tftp-path flash:
  file text
- create profile sync 0006536394534407
+ create profile
  ntp-server 192.168.2.177 mode directedbroadcast
  auto-register
   password 12345
@@ -596,6 +595,7 @@ telephony-service
  transfer-system full-consult
 !
 dial-peer voice 1 voip
+ description CALLS TO PSTN
  destination-pattern 9.T
  session protocol sipv2
  session target ipv4:192.168.0.255
@@ -606,6 +606,17 @@ dial-peer voice 1 voip
  no vad
 !
 dial-peer voice 2 voip
+ description CALLS TO HOSPITAL PBX
+ destination-pattern 8.T
+ session protocol sipv2
+ session target ipv4:192.168.0.255
+ voice-class codec 1
+ voice-class sip dtmf-relay force rtp-nte
+ dtmf-relay rtp-nte
+ no vad
+!
+dial-peer voice 3 voip
+ description KIT TO KIT CALLS
  destination-pattern [1-7]....
  session protocol sipv2
  session target ipv4:192.168.0.255
@@ -614,7 +625,18 @@ dial-peer voice 2 voip
  dtmf-relay rtp-nte
  no vad
 !
+dial-peer voice 4 voip
+ description DISCONNECTED PHONE BLACKHOLE
+ destination-pattern 101..
+ session protocol sipv2
+ session target ipv4:192.168.2.177
+ voice-class codec 1
+ voice-class sip dtmf-relay force rtp-nte
+ dtmf-relay rtp-nte
+ no vad
+!
 dial-peer voice 100 voip
+ description TELEPHONY USER INTERFACE (TUI)
  service extensionassigner out-bound
  destination-pattern 10100
  session protocol sipv2

@@ -12,8 +12,8 @@ ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option
 hostname SHK-101-DSW
 ip domain-name hospital.com
-username cisco privilege 15 secret cisco
-enable secret cisco
+username SHK-101-ADMIN privilege 15 secret SHK-101-PASSWORD
+enable secret SHK-101-PASSWORD
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
 spanning-tree mode rapid-pvst
@@ -580,6 +580,14 @@ ip access-list extended ACL_VOICE_IN
 ip access-list extended ACL_MGMT_IN
  permit ip any any
 !
+ip access-list extended ACL_MGMT_OUT
+ permit udp 192.168.0.0 0.0.3.255 any eq 5246
+ deny   udp any any eq 5246
+ permit ip any any
+!
+interface Vlan40
+!
+ip domain-name hospital.com
 ip access-list extended ACL_SPECIAL_IN
  permit ip any any
 !
@@ -611,6 +619,7 @@ interface Vlan40
  ip address 192.168.2.158 255.255.255.224
  ip verify unicast source reachable-via rx
  ip access-group ACL_MGMT_IN in
+ ip access-group ACL_MGMT_OUT out
  no shutdown
 !
 interface Vlan50

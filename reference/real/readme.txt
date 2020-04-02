@@ -1,6 +1,6 @@
-login username: cisco
-login password: cisco
-enable password: cisco
+login username: SHK-101-ADMIN
+login password: SHK-101-PASSWORD
+enable password: SHK-101-PASSWORD
 
 domain name: hospital.com
 dmvpn target: shkhub.hospital.com
@@ -64,6 +64,6 @@ Addressing on asw5:
 
 
 WLANs (SSID and PSK):
-- data: SHK-101-DATA / PYrz4Sj5
-- biomed: SHK-101-BIOMED / yg6hGG69
-- voice: SHK-101-VOICE / cHCryrO4
+- data: SHK-101-DATA / Zu3N5pWM
+- biomed: SHK-101-BIOMED / jj8TnzaJ
+- voice: SHK-101-VOICE / IBIjqp3I
