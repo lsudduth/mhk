@@ -113,6 +113,14 @@ ip access-list extended ACL_VOICE_IN
 ip access-list extended ACL_MGMT_IN
  permit ip any any
 !
+ip access-list extended ACL_MGMT_OUT
+ permit udp {{ data["subnets"]["full"].with_hostmask.replace("/", " ") }} any eq 5246
+ deny   udp any any eq 5246
+ permit ip any any
+!
+interface Vlan40
+!
+ip domain-name {{ data["domain_name"] }}
 ip access-list extended ACL_SPECIAL_IN
  permit ip any any
 !
@@ -144,6 +152,7 @@ interface Vlan40
  ip address {{ data["addr"]["dsw"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }}
  ip verify unicast source reachable-via rx
  ip access-group ACL_MGMT_IN in
+ ip access-group ACL_MGMT_OUT out
  no shutdown
 !
 interface Vlan50
