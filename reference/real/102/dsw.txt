@@ -8,12 +8,12 @@ service password-encryption
 ip routing
 ip multicast-routing
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,50
+ip dhcp snooping vlan 10,20,30,50,90
 no dhcp snooping information option
 hostname SHK-102-DSW
 ip domain-name hospital.com
-username SHK-102-ADMIN privilege 15 secret SHK-102-PASSWORD
-enable secret SHK-102-PASSWORD
+username SHK-102-ADMIN privilege 15 secret 5MJASznxqRnu
+enable secret 5MJASznxqRnu
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
 spanning-tree mode rapid-pvst
@@ -28,6 +28,8 @@ vlan 40
  name MGMT
 vlan 50
  name SPECIAL
+vlan 90
+ name TRUNK_AP
 !
 ip ssh version 2
 ip scp server enable
@@ -55,6 +57,11 @@ ip dhcp excluded-address 192.168.6.170 192.168.6.174
 ip dhcp pool SPECIAL_VLAN50
  network 192.168.6.160 255.255.255.240
  default-router 192.168.6.174
+ option 43 hex F104C0A8069A
+!
+ip dhcp pool TRUNK_AP_VLAN90
+ network 192.0.2.0 255.255.255.0
+ default-router 192.0.2.254
  option 43 hex F104C0A8069A
 !
 interface Loopback0
@@ -509,7 +516,7 @@ interface GigabitEthernet1/0/41
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -517,7 +524,7 @@ interface GigabitEthernet1/0/42
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -525,7 +532,7 @@ interface GigabitEthernet1/0/43
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -533,7 +540,7 @@ interface GigabitEthernet1/0/44
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -541,7 +548,7 @@ interface GigabitEthernet1/0/45
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -549,7 +556,7 @@ interface GigabitEthernet1/0/46
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -558,6 +565,7 @@ interface GigabitEthernet1/0/47
  description WLC
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 1-89,91-4094
  switchport nonegotiate
  no shutdown
 !
@@ -584,8 +592,6 @@ ip access-list extended ACL_MGMT_OUT
  permit udp 192.168.4.0 0.0.3.255 any eq 5246
  deny   udp any any eq 5246
  permit ip any any
-!
-interface Vlan40
 !
 ip domain-name hospital.com
 ip access-list extended ACL_SPECIAL_IN
@@ -630,6 +636,12 @@ interface Vlan50
  ip pim sparse-mode
  no shutdown
 !
+interface Vlan90
+ description AP DISCOVERY (TRUNK ONLY)
+ ip address 192.0.2.254 255.255.255.0
+ ip verify unicast source reachable-via rx
+ no shutdown
+!
 router eigrp SHK
  !
  address-family ipv4 unicast autonomous-system 1
@@ -646,7 +658,8 @@ router eigrp SHK
   !
   topology base
   exit-af-topology
-  network 0.0.0.0
+  network 192.168.0.0 0.0.255.255
+  network 192.168.4.0 0.0.3.255 
   metric weights 0 0 0 1 0 0 0
 !
 banner motd %

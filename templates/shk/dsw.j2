@@ -8,7 +8,7 @@ service password-encryption
 ip routing
 ip multicast-routing
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,50
+ip dhcp snooping vlan 10,20,30,50,90
 no dhcp snooping information option
 hostname SHK-{{ data["telephony_prefix"] }}-DSW
 ip domain-name {{ data["domain_name"] }}
@@ -28,6 +28,8 @@ vlan 40
  name MGMT
 vlan 50
  name SPECIAL
+vlan 90
+ name TRUNK_AP
 !
 ip ssh version 2
 ip scp server enable
@@ -57,6 +59,11 @@ ip dhcp pool SPECIAL_VLAN50
  default-router {{ data["addr"]["dsw"]["special_svi50"] }}
  option 43 hex F104{{ data["addr"]["wlc"]["mgmt_svi40_hex"] }}
 !
+ip dhcp pool TRUNK_AP_VLAN90
+ network 192.0.2.0 255.255.255.0
+ default-router 192.0.2.254
+ option 43 hex F104{{ data["addr"]["wlc"]["mgmt_svi40_hex"] }}
+!
 interface Loopback0
  ip address {{ data["addr"]["dsw"]["lb0"] }} 255.255.255.255
  ip pim sparse-mode
@@ -82,7 +89,7 @@ interface GigabitEthernet1/0/{{ i+1 }}
  description VLAN TRUNK
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk native vlan 10
+ switchport trunk native vlan 90
  switchport nonegotiate
  no shutdown
 !
@@ -91,6 +98,7 @@ interface GigabitEthernet1/0/47
  description WLC
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 1-89,91-4094
  switchport nonegotiate
  no shutdown
 !
@@ -117,8 +125,6 @@ ip access-list extended ACL_MGMT_OUT
  permit udp {{ data["subnets"]["full"].with_hostmask.replace("/", " ") }} any eq 5246
  deny   udp any any eq 5246
  permit ip any any
-!
-interface Vlan40
 !
 ip domain-name {{ data["domain_name"] }}
 ip access-list extended ACL_SPECIAL_IN
@@ -163,6 +169,12 @@ interface Vlan50
  ip pim sparse-mode
  no shutdown
 !
+interface Vlan90
+ description AP DISCOVERY (TRUNK ONLY)
+ ip address 192.0.2.254 255.255.255.0
+ ip verify unicast source reachable-via rx
+ no shutdown
+!
 router eigrp SHK
  !
  address-family ipv4 unicast autonomous-system 1
@@ -179,7 +191,8 @@ router eigrp SHK
   !
   topology base
   exit-af-topology
-  network 0.0.0.0
+  network 192.168.0.0 0.0.255.255
+  network {{ data["subnets"]["full"].with_hostmask.replace("/", " ") }} 
   metric weights 0 0 0 1 0 0 0
 !
 banner motd %

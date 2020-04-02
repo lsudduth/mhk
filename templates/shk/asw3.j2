@@ -10,7 +10,7 @@ ip domain-name {{ data["domain_name"] }}
 username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
 enable secret {{ data["creds"]["password"] }}
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,50
+ip dhcp snooping vlan 10,20,30,50,90
 no dhcp snooping information option
 no ip routing
 !
@@ -26,6 +26,8 @@ vlan 40
  name MGMT
 vlan 50
  name SPECIAL
+vlan 90
+ name TRUNK_AP
 !
 ip ssh version 2
 ip scp server enable

@@ -7,8 +7,8 @@ service timestamps log datetime msec localtime
 service password-encryption
 !
 hostname SHK-101-RTR
-username SHK-101-ADMIN privilege 15 secret SHK-101-PASSWORD
-enable secret SHK-101-PASSWORD
+username SHK-101-ADMIN privilege 15 secret vHekGMjYwDFg
+enable secret vHekGMjYwDFg
 !
 boot-start-marker
 boot-end-marker

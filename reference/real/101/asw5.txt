@@ -7,10 +7,10 @@ service password-encryption
 !
 hostname SHK-101-ASW5
 ip domain-name hospital.com
-username SHK-101-ADMIN privilege 15 secret SHK-101-PASSWORD
-enable secret SHK-101-PASSWORD
+username SHK-101-ADMIN privilege 15 secret vHekGMjYwDFg
+enable secret vHekGMjYwDFg
 ip dhcp snooping
-ip dhcp snooping vlan 10,20,30,50
+ip dhcp snooping vlan 10,20,30,50,90
 no dhcp snooping information option
 no ip routing
 !
@@ -26,6 +26,8 @@ vlan 40
  name MGMT
 vlan 50
  name SPECIAL
+vlan 90
+ name TRUNK_AP
 !
 ip ssh version 2
 ip scp server enable

@@ -1,10 +1,8 @@
-hostname SHK-101-WLC
-
 # WLC Config Begin .. template date 2020
 ! PID: AIR-CT3504-K9
 ! Product Version: 8.5.161.0
 
-}
+
 
 
 config sysname SHK-101-WLC
@@ -15,12 +13,9 @@ config mobility group domain SHK-101-MG
 config network rf-network-name SHK-101-RF
 
 
-config mgmtuser add encrypt SHK-101-ADMIN SHK-101-PASSWORD read-write
+config mgmtuser add encrypt SHK-101-ADMIN vHekGMjYwDFg read-write
 config mgmtuser telnet SHK-101-ADMIN disable
-config ap mgmtuser add username SHK-101-ADMIN password SHK-101-PASSWORD secret SHK-101-PASSWORD all
-
-SHK-101-ADMIN SHK-101-PASSWORD
-enable secret SHK-101-PASSWORD
+config ap mgmtuser add username SHK-101-ADMIN password vHekGMjYwDFg secret vHekGMjYwDFg all
 
 
 config time ntp server 1 192.168.2.177
@@ -271,7 +266,7 @@ config wlan profiling local http disable 14
 
 config wlan mdns disable 14
 
-config wlan security wpa akm psk set-key ascii fNr3WoFz 14
+config wlan security wpa akm psk set-key ascii tVCqOKGv 14
 
 config wlan enable 14
 
@@ -343,7 +338,7 @@ config wlan profiling local http disable 15
 
 config wlan mdns disable 15
 
-config wlan security wpa akm psk set-key ascii 1RUw54By 15
+config wlan security wpa akm psk set-key ascii EhNBix9S 15
 
 config wlan enable 15
 
@@ -416,7 +411,7 @@ config wlan profiling local http disable 16
 
 config wlan mdns disable 16
 
-config wlan security wpa akm psk set-key ascii MZX3ES2b 16
+config wlan security wpa akm psk set-key ascii ecdprasH 16
 
 config wlan enable 16
 
