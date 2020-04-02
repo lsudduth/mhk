@@ -135,7 +135,7 @@ def process_node(node):
 
     creds = {
         "username": f"{ssid_prefix}-ADMIN",
-        "password": f"{ssid_prefix}-PASSWORD",
+        "password": generate_psk(psk_length=12),
     }
 
     # Update data dict with new data, then return it

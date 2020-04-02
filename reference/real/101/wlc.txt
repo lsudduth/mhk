@@ -271,7 +271,7 @@ config wlan profiling local http disable 14
 
 config wlan mdns disable 14
 
-config wlan security wpa akm psk set-key ascii Zu3N5pWM 14
+config wlan security wpa akm psk set-key ascii fNr3WoFz 14
 
 config wlan enable 14
 
@@ -343,7 +343,7 @@ config wlan profiling local http disable 15
 
 config wlan mdns disable 15
 
-config wlan security wpa akm psk set-key ascii jj8TnzaJ 15
+config wlan security wpa akm psk set-key ascii 1RUw54By 15
 
 config wlan enable 15
 
@@ -416,7 +416,7 @@ config wlan profiling local http disable 16
 
 config wlan mdns disable 16
 
-config wlan security wpa akm psk set-key ascii IBIjqp3I 16
+config wlan security wpa akm psk set-key ascii MZX3ES2b 16
 
 config wlan enable 16
 

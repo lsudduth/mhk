@@ -64,6 +64,6 @@ Addressing on asw5:
 
 
 WLANs (SSID and PSK):
-- data: SHK-101-DATA / Zu3N5pWM
-- biomed: SHK-101-BIOMED / jj8TnzaJ
-- voice: SHK-101-VOICE / IBIjqp3I
+- data: SHK-101-DATA / fNr3WoFz
+- biomed: SHK-101-BIOMED / 1RUw54By
+- voice: SHK-101-VOICE / MZX3ES2b

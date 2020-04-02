@@ -1,0 +1,604 @@
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+!
+hostname SHK-102-ASW2
+ip domain-name hospital.com
+username SHK-102-ADMIN privilege 15 secret SHK-102-PASSWORD
+enable secret SHK-102-PASSWORD
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,50
+no dhcp snooping information option
+no ip routing
+!
+spanning-tree mode rapid-pvst
+vtp mode off
+vlan 10
+ name DATA
+vlan 20
+ name BIOMED
+vlan 30
+ name VOICE
+vlan 40
+ name MGMT
+vlan 50
+ name SPECIAL
+!
+ip ssh version 2
+ip scp server enable
+crypto key generate rsa modulus 2048
+!
+interface GigabitEthernet1/0/1
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/2
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/3
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/4
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/5
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/6
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/7
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/8
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/9
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/10
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/11
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/12
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/13
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/14
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/15
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/16
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/17
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/18
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/19
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/20
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/21
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/22
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/23
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/24
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/25
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/26
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/27
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/28
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/29
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/30
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/31
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/32
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/33
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/34
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/35
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/36
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/37
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/38
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/39
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/40
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/41
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/42
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/43
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+interface GigabitEthernet1/0/44
+ description USER/VOICE
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 30
+ switchport port-security
+ switchport port-security violation restrict
+ switchport port-security maximum 2
+ spanning-tree portfast
+ no shutdown
+!
+
+interface GigabitEthernet1/0/45
+ description VLAN TRUNK
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 10
+ switchport nonegotiate
+ ip dhcp snooping trust
+ no shutdown
+!
+interface GigabitEthernet1/0/46
+ description VLAN TRUNK
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 10
+ switchport nonegotiate
+ ip dhcp snooping trust
+ no shutdown
+!
+interface GigabitEthernet1/0/47
+ description VLAN TRUNK
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 10
+ switchport nonegotiate
+ ip dhcp snooping trust
+ no shutdown
+!
+interface GigabitEthernet1/0/48
+ description VLAN TRUNK
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 10
+ switchport nonegotiate
+ ip dhcp snooping trust
+ no shutdown
+!
+
+interface Vlan40
+ description MGMT VLAN
+ ip address 192.168.6.132 255.255.255.224
+ no shutdown
+!
+ip default-gateway 192.168.6.158
+banner motd %
+----------------------------------------------------------------------
+NOTICE TO USERS
+This is an official computer system and is the property of the
+hospital. It is for authorized users only. Unauthorized users
+are prohibited. Users (authorized or unauthorized) have no explicit
+or implicit expectation of privacy. Any or all uses of this system
+may be subject to one or more of the following actions: interception,
+monitoring, recording, auditing, inspection and disclosing to security
+personnel and law enforcement personnel, as well as authorized
+officials of other agencies, both domestic and foreign. By using this
+system, the user consents to these actions. Unauthorized or improper
+use of this system may result in administrative disciplinary action
+and civil and criminal penalties. By accessing this system you
+indicate your awareness of and consent to these terms and conditions
+of use. Discontinue access immediately if you do not agree to the
+conditions stated in this notice.
+----------------------------------------------------------------------
+%
+!
+line con 0
+ exec-timeout 30 0
+ logging synchronous
+ login local
+ transport preferred none
+ stopbits 1
+line aux 0
+ no exec
+ transport input none
+line vty 0 4
+ exec-timeout 10 0
+ logging synchronous
+ login local
+ transport preferred none
+ transport input ssh
+ transport output ssh
+!
+ntp authenticate
+ntp authentication-key 1 md5 NTP123
+ntp trusted-key 1
+ntp server 192.168.6.177 key 1
+!
+end
