@@ -12,8 +12,8 @@ ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option
 hostname SHK-{{ data["telephony_prefix"] }}-DSW
 ip domain-name {{ data["domain_name"] }}
-username cisco privilege 15 secret cisco
-enable secret cisco
+username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
+enable secret {{ data["creds"]["password"] }}
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
 spanning-tree mode rapid-pvst

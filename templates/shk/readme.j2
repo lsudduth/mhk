@@ -1,6 +1,6 @@
-login username: cisco
-login password: cisco
-enable password: cisco
+login username: {{ data["creds"]["username"] }}
+login password: {{ data["creds"]["password"] }}
+enable password: {{ data["creds"]["password"] }}
 
 domain name: {{ data["domain_name"] }}
 dmvpn target: {{ data["dmvpn_target"] }}

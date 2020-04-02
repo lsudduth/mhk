@@ -7,8 +7,8 @@ service password-encryption
 !
 hostname SHK-{{ data["telephony_prefix"] }}-ASW3
 ip domain-name {{ data["domain_name"] }}
-username cisco privilege 15 secret cisco
-enable secret cisco
+username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
+enable secret {{ data["creds"]["password"] }}
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50
 no dhcp snooping information option

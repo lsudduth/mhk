@@ -133,6 +133,11 @@ def process_node(node):
         "voice": {"ssid": f"{ssid_prefix}-VOICE", "psk": generate_psk()},
     }
 
+    creds = {
+        "username": f"{ssid_prefix}-ADMIN",
+        "password": f"{ssid_prefix}-PASSWORD",
+    }
+
     # Update data dict with new data, then return it
     data.update(
         {
@@ -142,6 +147,7 @@ def process_node(node):
             "subnets": subnets,
             "addr": addr,
             "wlan": wlan,
+            "creds": creds,
         }
     )
     return data

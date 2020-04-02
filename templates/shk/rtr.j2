@@ -8,8 +8,8 @@ service timestamps log datetime msec localtime
 service password-encryption
 !
 hostname SHK-{{ tel }}-RTR
-username cisco privilege 15 secret cisco
-enable secret cisco
+username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
+enable secret {{ data["creds"]["password"] }}
 !
 boot-start-marker
 boot-end-marker
@@ -42,7 +42,6 @@ ip domain list vrf FVRF_SATELLITE {{ data["domain_name"] }}
 logging buffered 51200 informational
 !
 no aaa new-model
-ip domain name cisco.com
 login on-success log
 !
 license accept end user agreement
@@ -325,7 +324,7 @@ voice register global
  max-pool 110
  tftp-path flash:
  file text
- create profile sync 0006536394534407
+ create profile
  ntp-server {{ data["addr"]["rtr"]["lb0"] }} mode directedbroadcast
  auto-register
   password 12345
