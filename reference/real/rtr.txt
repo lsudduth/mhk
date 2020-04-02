@@ -1,4 +1,3 @@
-{% set tel = data["telephony_prefix"] -%}
 version 16.6
 no service pad
 service tcp-keepalives-in
@@ -7,7 +6,7 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
-hostname SHK-{{ tel }}-RTR
+hostname SHK-101-RTR
 username cisco privilege 15 secret cisco
 enable secret cisco
 !
@@ -33,11 +32,11 @@ vrf definition FVRF_SATELLITE
  address-family ipv4
  exit-address-family
 !
-ip domain-name {{ data["domain_name"] }}
+ip domain-name hospital.com
 ip domain-lookup
-ip domain list vrf FVRF_WIRELINE {{ data["domain_name"] }}
-ip domain list vrf FVRF_CELLULAR {{ data["domain_name"] }}
-ip domain list vrf FVRF_SATELLITE {{ data["domain_name"] }}
+ip domain list vrf FVRF_WIRELINE hospital.com
+ip domain list vrf FVRF_CELLULAR hospital.com
+ip domain list vrf FVRF_SATELLITE hospital.com
 !
 logging buffered 51200 informational
 !
@@ -111,16 +110,16 @@ crypto ipsec profile IPSEC_PROFILE
  set ikev2-profile IKEV2_PROFILE
 ! 
 interface Loopback0
- ip address {{ data["addr"]["rtr"]["lb0"] }} 255.255.255.255
+ ip address 192.168.2.177 255.255.255.255
  no shutdown
 !
 interface Tunnel100
  description DMVPN OVER WIRELINE
- ip add 192.168.1.{{ data["index"] + 1 }} 255.255.255.0
+ ip add 192.168.1.1 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN100
- ip nhrp nhs 192.168.1.254 nbma {{ data["dmvpn_target"] }} multicast
+ ip nhrp nhs 192.168.1.254 nbma shkhub.hospital.com multicast
  ip nhrp network-id 100
  delay 100
  tunnel source GigabitEthernet0/0/1
@@ -131,11 +130,11 @@ interface Tunnel100
 !
 interface Tunnel200
  description DMVPN OVER CELLULAR
- ip add 192.168.2.{{ data["index"] + 1 }} 255.255.255.0
+ ip add 192.168.2.1 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN200
- ip nhrp nhs 192.168.2.254 nbma {{ data["dmvpn_target"] }} multicast
+ ip nhrp nhs 192.168.2.254 nbma shkhub.hospital.com multicast
  ip nhrp network-id 200
  delay 200
  tunnel source GigabitEthernet0/0/2
@@ -146,11 +145,11 @@ interface Tunnel200
 !
 interface Tunnel300
  description DMVPN OVER SATELLITE
- ip add 192.168.3.{{ data["index"] + 1 }} 255.255.255.0
+ ip add 192.168.3.1 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN300
- ip nhrp nhs 192.168.3.254 nbma {{ data["dmvpn_target"] }} multicast
+ ip nhrp nhs 192.168.3.254 nbma shkhub.hospital.com multicast
  ip nhrp network-id 300
  delay 300
  tunnel source GigabitEthernet0/0/2
@@ -234,7 +233,7 @@ router eigrp SHK
   topology base
   exit-af-topology
   network 192.168.0.0 0.0.255.255
-  network {{ data["addr"]["rtr"]["lb0"] }} 0.0.0.0
+  network 192.168.2.177 0.0.0.0
   metric weights 0 0 0 1 0 0 0
 !
 no ip forward-protocol nd
@@ -320,51 +319,264 @@ voice class codec 1
 !
 voice register global
  mode cme
- source-address {{ data["addr"]["rtr"]["lb0"] }} port 5060
+ source-address 192.168.2.177 port 5060
  max-dn 100
  max-pool 110
  tftp-path flash:
  file text
  create profile sync 0006536394534407
- ntp-server {{ data["addr"]["rtr"]["lb0"] }} mode directedbroadcast
+ ntp-server 192.168.2.177 mode directedbroadcast
  auto-register
   password 12345
   auto-assign 11 to 49
   template 1
  !
 !
-{% for i in range(11, 61) -%}
-voice register dn  {{ i }}
- number {{ tel }}{{ i }}
+voice register dn  11
+ number 10111
 !
-{% endfor %}
+voice register dn  12
+ number 10112
+!
+voice register dn  13
+ number 10113
+!
+voice register dn  14
+ number 10114
+!
+voice register dn  15
+ number 10115
+!
+voice register dn  16
+ number 10116
+!
+voice register dn  17
+ number 10117
+!
+voice register dn  18
+ number 10118
+!
+voice register dn  19
+ number 10119
+!
+voice register dn  20
+ number 10120
+!
+voice register dn  21
+ number 10121
+!
+voice register dn  22
+ number 10122
+!
+voice register dn  23
+ number 10123
+!
+voice register dn  24
+ number 10124
+!
+voice register dn  25
+ number 10125
+!
+voice register dn  26
+ number 10126
+!
+voice register dn  27
+ number 10127
+!
+voice register dn  28
+ number 10128
+!
+voice register dn  29
+ number 10129
+!
+voice register dn  30
+ number 10130
+!
+voice register dn  31
+ number 10131
+!
+voice register dn  32
+ number 10132
+!
+voice register dn  33
+ number 10133
+!
+voice register dn  34
+ number 10134
+!
+voice register dn  35
+ number 10135
+!
+voice register dn  36
+ number 10136
+!
+voice register dn  37
+ number 10137
+!
+voice register dn  38
+ number 10138
+!
+voice register dn  39
+ number 10139
+!
+voice register dn  40
+ number 10140
+!
+voice register dn  41
+ number 10141
+!
+voice register dn  42
+ number 10142
+!
+voice register dn  43
+ number 10143
+!
+voice register dn  44
+ number 10144
+!
+voice register dn  45
+ number 10145
+!
+voice register dn  46
+ number 10146
+!
+voice register dn  47
+ number 10147
+!
+voice register dn  48
+ number 10148
+!
+voice register dn  49
+ number 10149
+!
+voice register dn  50
+ number 10150
+!
+voice register dn  51
+ number 10151
+!
+voice register dn  52
+ number 10152
+!
+voice register dn  53
+ number 10153
+!
+voice register dn  54
+ number 10154
+!
+voice register dn  55
+ number 10155
+!
+voice register dn  56
+ number 10156
+!
+voice register dn  57
+ number 10157
+!
+voice register dn  58
+ number 10158
+!
+voice register dn  59
+ number 10159
+!
+voice register dn  60
+ number 10160
+!
+
 voice register template  1
  paging-dn 10
 !
-{% for i in range(51, 61) -%}
-voice register pool  {{ i }}
- id mac 02EA.EAEA.00{{ i }}
- number 1 dn {{ i }}
+voice register pool  51
+ id mac 02EA.EAEA.0051
+ number 1 dn 51
  dtmf-relay rtp-nte
  codec g711ulaw
  paging-dn 10
- provision-tag {{ i }}
+ provision-tag 51
 !
-{% endfor %}
+voice register pool  52
+ id mac 02EA.EAEA.0052
+ number 1 dn 52
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 52
+!
+voice register pool  53
+ id mac 02EA.EAEA.0053
+ number 1 dn 53
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 53
+!
+voice register pool  54
+ id mac 02EA.EAEA.0054
+ number 1 dn 54
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 54
+!
+voice register pool  55
+ id mac 02EA.EAEA.0055
+ number 1 dn 55
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 55
+!
+voice register pool  56
+ id mac 02EA.EAEA.0056
+ number 1 dn 56
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 56
+!
+voice register pool  57
+ id mac 02EA.EAEA.0057
+ number 1 dn 57
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 57
+!
+voice register pool  58
+ id mac 02EA.EAEA.0058
+ number 1 dn 58
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 58
+!
+voice register pool  59
+ id mac 02EA.EAEA.0059
+ number 1 dn 59
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 59
+!
+voice register pool  60
+ id mac 02EA.EAEA.0060
+ number 1 dn 60
+ dtmf-relay rtp-nte
+ codec g711ulaw
+ paging-dn 10
+ provision-tag 60
+!
+
 !
 voice hunt-group 1 parallel
- final {{ tel }}02
- list {% for i in range(11,43) -%}
- {{ tel }}{{ i }}{{ "," if not loop.last }}
- {%- endfor %}
+ final 10102
+ list 10111,10112,10113,10114,10115,10116,10117,10118,10119,10120,10121,10122,10123,10124,10125,10126,10127,10128,10129,10130,10131,10132,10133,10134,10135,10136,10137,10138,10139,10140,10141,10142
  timeout 60 
  pilot 10101 
 !
 voice hunt-group 2 parallel
- final {{ tel }}50
- list {% for i in range(51,61) -%}
- {{ tel }}{{ i }}{{ "," if not loop.last }}
- {%- endfor %}
+ final 10150
+ list 10151,10152,10153,10154,10155,10156,10157,10158,10159,10160
  timeout 60 
  pilot 10102 
 !
@@ -406,13 +618,13 @@ dial-peer voice 100 voip
  service extensionassigner out-bound
  destination-pattern 10100
  session protocol sipv2
- session target ipv4:{{ data["addr"]["rtr"]["lb0"] }}
+ session target ipv4:192.168.2.177
  dtmf-relay rtp-nte
  codec g711ulaw
  no vad
 !
 ephone-dn  10
- number {{ tel }}10
+ number 10110
  paging ip 239.0.1.10 port 20480
  paging group 10
 !         
