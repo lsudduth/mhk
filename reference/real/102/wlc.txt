@@ -13,9 +13,9 @@ config mobility group domain SHK-102-MG
 config network rf-network-name SHK-102-RF
 
 
-config mgmtuser add encrypt SHK-102-ADMIN 5MJASznxqRnu read-write
+config mgmtuser add encrypt SHK-102-ADMIN BtZNDP1IgDvc read-write
 config mgmtuser telnet SHK-102-ADMIN disable
-config ap mgmtuser add username SHK-102-ADMIN password 5MJASznxqRnu secret 5MJASznxqRnu all
+config ap mgmtuser add username SHK-102-ADMIN password BtZNDP1IgDvc secret BtZNDP1IgDvc all
 
 
 config time ntp server 1 192.168.6.177
@@ -53,6 +53,8 @@ config mdns snooping disable
 config lag enable
 
 
+config switchconfig fips-prerequisite enable
+config switchconfig fips-authorization-secret encrypt 1 df54cb494cddd573f74b80cf6436b6e5 c16b31809c669ad447cfa9269d5fd322026e8ace 16 27cc2f098c982310133d043d10579c63000000000000000000000000000000000000000000000000
 config network webcolor red
 config network mgmt-via-wireless enable
 config network ap-priority enable
@@ -266,7 +268,7 @@ config wlan profiling local http disable 14
 
 config wlan mdns disable 14
 
-config wlan security wpa akm psk set-key ascii gwigyVkT 14
+config wlan security wpa akm psk set-key ascii 1Cp6WbdJ 14
 
 config wlan enable 14
 
@@ -338,7 +340,7 @@ config wlan profiling local http disable 15
 
 config wlan mdns disable 15
 
-config wlan security wpa akm psk set-key ascii UrGvPMse 15
+config wlan security wpa akm psk set-key ascii 4jDD3UYY 15
 
 config wlan enable 15
 
@@ -411,7 +413,7 @@ config wlan profiling local http disable 16
 
 config wlan mdns disable 16
 
-config wlan security wpa akm psk set-key ascii e2hSu1Lt 16
+config wlan security wpa akm psk set-key ascii lXm2FmFE 16
 
 config wlan enable 16
 
