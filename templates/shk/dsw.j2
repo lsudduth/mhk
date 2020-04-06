@@ -10,6 +10,7 @@ ip multicast-routing
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50,90
 no dhcp snooping information option
+no ip dhcp conflict logging
 hostname SHK-{{ data["telephony_prefix"] }}-DSW
 ip domain-name {{ data["domain_name"] }}
 username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
