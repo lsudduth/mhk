@@ -119,7 +119,7 @@ interface Tunnel100
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN100
- ip nhrp nhs 192.168.1.254 nbma {{ data["dmvpn_target"] }} multicast
+ ip nhrp nhs 192.168.251.254 nbma {{ data["dmvpn_target"] }} multicast
  ip nhrp network-id 100
  delay 100
  tunnel source GigabitEthernet0/0/1
@@ -130,14 +130,14 @@ interface Tunnel100
 !
 interface Tunnel200
  description DMVPN OVER CELLULAR
- ip add 192.168.2.{{ data["index"] + 1 }} 255.255.255.0
+ ip add 192.168.252.{{ data["index"] + 1 }} 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN200
  ip nhrp nhs 192.168.2.254 nbma {{ data["dmvpn_target"] }} multicast
  ip nhrp network-id 200
  delay 200
- tunnel source GigabitEthernet0/0/2
+ tunnel source Cellular0/2/0
  tunnel mode gre multipoint
  tunnel key 200
  tunnel vrf FVRF_CELLULAR
@@ -145,7 +145,7 @@ interface Tunnel200
 !
 interface Tunnel300
  description DMVPN OVER SATELLITE
- ip add 192.168.3.{{ data["index"] + 1 }} 255.255.255.0
+ ip add 192.168.253.{{ data["index"] + 1 }} 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN300
@@ -161,7 +161,7 @@ interface Tunnel300
 interface GigabitEthernet0/0/0
  description DISTRIBUTION SWITCH
  negotiation auto
- ip address 192.168.0.1 255.255.255.252
+ ip address 192.168.254.1 255.255.255.252
  ip verify unicast source reachable-via rx
  no shutdown
 !
