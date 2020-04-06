@@ -13,7 +13,7 @@ config mobility group domain SHK-{{ data["telephony_prefix"] }}-MG
 config network rf-network-name SHK-{{ data["telephony_prefix"] }}-RF
 
 {# secure the logins #}
-config mgmtuser add encrypt {{ data["creds"]["username"] }} {{ data["creds"]["password"] }} read-write
+config mgmtuser add {{ data["creds"]["username"] }} {{ data["creds"]["password"] }} read-write
 config mgmtuser telnet {{ data["creds"]["username"] }} disable
 config ap mgmtuser add username {{ data["creds"]["username"] }} password {{ data["creds"]["password"] }} secret {{ data["creds"]["password"] }} all
 
