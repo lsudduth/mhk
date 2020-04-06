@@ -17,19 +17,25 @@ Given this `inputs.yml` file:
 hub:
   dmvpn_source:
     interface: GigabitEthernet0/0/0
-    ipv4_addr: 192.0.2.1 255.255.255.0
-    ipv4_nhop: 192.0.2.2
+    ipv4:
+      addr: 192.0.2.1
+      netmask: 255.255.255.0
+      nhop: 192.0.2.2
   bgp:
     local_asn: 65001
     hospital_peer: 192.0.2.129
     hospital_asn: 65002
 
-node_list:
+shk:
   - telephony_prefix: 101
-    ipv4_network: 172.16.0.0/22
+    ipv4_network: 192.168.0.0/22
+    domain_name: hospital.com
+    dmvpn_target: shkhub.hospital.com
     index_offset: 0
   - telephony_prefix: 102
-    ipv4_network: 172.16.4.0/22
+    ipv4_network: 192.168.4.0/22
+    domain_name: hospital.com
+    dmvpn_target: 192.0.2.1
     index_offset: 0
 ...
 ```
