@@ -459,48 +459,48 @@ config acl rule destination port range Cisco8821-Provision 65 0 65535
 
 config acl apply Cisco8821-Provision
 
-config wlan create 512 Cisco8821-Provision cisco
-config wlan broadcast-ssid disable 512
-config wlan acl 512 Cisco8821-Provision
+config wlan create 13 Cisco8821-Provision cisco
+config wlan broadcast-ssid disable 13
+config wlan acl 13 Cisco8821-Provision
 
-config wlan qos 512 silver
-config wlan wmm allow 512
+config wlan qos 13 silver
+config wlan wmm allow 13
 
-config wlan security wpa akm 802.1x disable 512
-config wlan security wpa wpa2 ciphers aes disable 512
-config wlan security wpa wpa2 disable 512
-config wlan security wpa disable 512
-config wlan security web-auth server-precedence 512 local radius ldap
-config wlan security ft over-the-ds disable 512
+config wlan security wpa akm 802.1x disable 13
+config wlan security wpa wpa2 ciphers aes disable 13
+config wlan security wpa wpa2 disable 13
+config wlan security wpa disable 13
+config wlan security web-auth server-precedence 13 local radius ldap
+config wlan security ft over-the-ds disable 13
 
-config wlan radius_server acct interim-update disable 512
-config wlan radius_server acct disable 512
-config wlan radius_server auth disable 512
+config wlan radius_server acct interim-update disable 13
+config wlan radius_server acct disable 13
+config wlan radius_server auth disable 13
 
-config wlan dms enable 512
-config wlan assisted-roaming neighbor-list enable 512
-config wlan interface 512 voice
+config wlan dms enable 13
+config wlan assisted-roaming neighbor-list enable 13
+config wlan interface 13 voice
 
-config wlan chd 512 disable
-config wlan mdns disable 512
+config wlan chd 13 disable
+config wlan mdns disable 13
 
-config wlan exclusionlist 512 0
-config wlan bss-transition enable 512
-config wlan session-timeout 512 1800
-config wlan mfp client enable 512
+config wlan exclusionlist 13 0
+config wlan bss-transition enable 13
+config wlan session-timeout 13 1800
+config wlan mfp client enable 13
 
-config wlan enable 512
+config wlan enable 13
 
 config wlan apgroup add Cisco-8821-Provision
-config wlan apgroup interface-mapping add Cisco-8821-Provision 14 data
 
+config wlan apgroup interface-mapping add Cisco-8821-Provision 13 voice
+config wlan apgroup wlan-radio-policy Cisco-8821-Provision 13 none
+config wlan apgroup interface-mapping add Cisco-8821-Provision 14 data
 config wlan apgroup wlan-radio-policy Cisco-8821-Provision 14 none
 config wlan apgroup interface-mapping add Cisco-8821-Provision 15 biomed
 config wlan apgroup wlan-radio-policy Cisco-8821-Provision 15 none
 config wlan apgroup interface-mapping add Cisco-8821-Provision 16 voice
 config wlan apgroup wlan-radio-policy Cisco-8821-Provision 16 none
-config wlan apgroup interface-mapping add Cisco-8821-Provision 512 voice
-config wlan apgroup wlan-radio-policy Cisco-8821-Provision 512 none
 
 # WLC Config End
 
