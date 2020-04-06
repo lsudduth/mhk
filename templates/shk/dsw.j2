@@ -60,6 +60,8 @@ ip dhcp pool SPECIAL_VLAN50
  default-router {{ data["addr"]["dsw"]["special_svi50"] }}
  option 43 hex F104{{ data["addr"]["wlc"]["mgmt_svi40_hex"] }}
 !
+ip dhcp excluded-address 192.0.2.1
+ip dhcp excluded-address 192.0.2.250 192.0.2.254
 ip dhcp pool TRUNK_AP_VLAN90
  network 192.0.2.0 255.255.255.0
  default-router 192.0.2.254
@@ -124,6 +126,7 @@ ip access-list extended ACL_MGMT_IN
 !
 ip access-list extended ACL_MGMT_OUT
  permit udp {{ data["subnets"]["full"].with_hostmask.replace("/", " ") }} any eq 5246
+ permit udp 192.0.2.0 0.0.0.255 any eq 5246
  deny   udp any any eq 5246
  permit ip any any
 !
