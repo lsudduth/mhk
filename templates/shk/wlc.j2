@@ -50,7 +50,12 @@ config network multicast mode multicast 239.255.2.154
 config mdns snooping disable
 
 {# WLC LAG is static, not LACP/PAgP ; expecting single mGig port only, although with this ANY port on the WLC will work #}
-config lag enable
+config lag disable
+config port adminmode 1 disable
+config port adminmode 2 disable
+config port adminmode 3 disable
+config port adminmode 4 disable
+config port adminmode 5 enable
 
 {# misc things #}
 config switchconfig fips-prerequisite enable
@@ -67,30 +72,35 @@ config dhcp proxy disable bootp-broadcast disable
 {#   DHCP will be bridged, although putting gw as DHCP keeps intuitive and avoids some conflict glitches #}
 
 config interface vlan management 40
+config interface port management 5
 config interface address management {{ data["addr"]["wlc"]["mgmt_svi40"] }} {{ data["subnets"]["mgmt"].netmask }} {{ data["addr"]["dsw"]["mgmt_svi40"] }}
 config interface dhcp management primary {{ data["addr"]["dsw"]["mgmt_svi40"] }}
 config interface dhcp management proxy-mode disable
 
 config interface create data 10
 config interface vlan data 10
+config interface port data 5
 config interface address dynamic-interface data {{ data["addr"]["wlc"]["data_svi10"] }} {{ data["subnets"]["data"].netmask }} {{ data["addr"]["dsw"]["data_svi10"] }}
 config interface dhcp dynamic-interface data primary {{ data["addr"]["dsw"]["data_svi10"] }}
 config interface dhcp dynamic-interface data proxy-mode disable
 
 config interface create biomed 20
 config interface vlan biomed 20
+config interface port biomed 5
 config interface address dynamic-interface biomed {{ data["addr"]["wlc"]["biomed_svi20"] }} {{ data["subnets"]["biomed"].netmask }} {{ data["addr"]["dsw"]["biomed_svi20"] }}
 config interface dhcp dynamic-interface biomed primary {{ data["addr"]["dsw"]["biomed_svi20"] }}
 config interface dhcp dynamic-interface biomed proxy-mode disable
 
 config interface create voice 30
 config interface vlan voice 30
+config interface port voice 5
 config interface address dynamic-interface voice {{ data["addr"]["wlc"]["voice_svi30"] }} {{ data["subnets"]["voice"].netmask }} {{ data["addr"]["dsw"]["voice_svi30"] }}
 config interface dhcp dynamic-interface voice primary {{ data["addr"]["dsw"]["voice_svi30"] }}
 config interface dhcp dynamic-interface voice proxy-mode disable
 
 config interface create special 50
 config interface vlan special 50
+config interface port special 5
 config interface address dynamic-interface special {{ data["addr"]["wlc"]["special_svi50"] }} {{ data["subnets"]["special"].netmask }} {{ data["addr"]["dsw"]["special_svi50"] }}
 config interface dhcp dynamic-interface special primary {{ data["addr"]["dsw"]["special_svi50"] }}
 config interface dhcp dynamic-interface special proxy-mode disable
