@@ -341,13 +341,18 @@ voice register global
  source-address {{ data["addr"]["rtr"]["lb0"] }} port 5060
  max-dn 100
  max-pool 110
+ load 7841 sip78xx.12-0-1-11
+ load 8832 sip8832.12-1-1-23
+ load 8841 sip88xx.12-0-1-11
+ load 8821 sip8821.11-0-3SR6-15
+ load 8831 sip8831.10-3-1SR5-1
  tftp-path flash:
  file text
  create profile
  ntp-server {{ data["addr"]["rtr"]["lb0"] }} mode directedbroadcast
  auto-register
   password 12345
-  auto-assign 11 to 49
+  auto-assign {{ tel }}11 to {{ tel }}49
   template 1
  !
 !
@@ -359,7 +364,7 @@ voice register dn  {{ i }}
 voice register template  1
  paging-dn 10
 !
-{% for i in range(51, 61) -%}
+{% for i in range(50, 61) -%}
 voice register pool  {{ i }}
  id mac 02EA.EAEA.00{{ i }}
  number 1 dn {{ i }}
@@ -396,6 +401,41 @@ application
  !
 !         
 tftp-server bootflash:8821-WLANDefault.xml
+tftp-server flash:kern2.78xx.12-0-1-11.sbn
+tftp-server flash:kern78xx.12-0-1-11.sbn
+tftp-server flash:rootfs2.78xx.12-0-1-11.sbn
+tftp-server flash:rootfs78xx.12-0-1-11.sbn
+tftp-server flash:sboot2.78xx.12-0-1-11.sbn
+tftp-server flash:sboot78xx.12-0-1-11.sbn
+tftp-server flash:sip78xx.12-0-1-11.loads
+tftp-server flash:dtblob8821.HE-01-005.sbn
+tftp-server flash:fbi8821.HE-01-010.sbn
+tftp-server flash:kern8821.11-0-3SR6-15.sbn
+tftp-server flash:rootfs8821.11-0-3SR6-15.sbn
+tftp-server flash:sb28821.HE-01-020.sbn
+tftp-server flash:sip8821.11-0-3SR6-15.loads
+tftp-server flash:vc48821.11-0-3SR6-15.sbn
+tftp-server flash:boot1288xx.BE-01-007.sbn
+tftp-server flash:fbi88xx.BE-01-010.sbn
+tftp-server flash:kern88xx.12-0-1-11.sbn
+tftp-server flash:kern288xx.12-0-1-11.sbn
+tftp-server flash:m0patch288xx.BE-01-001.sbn
+tftp-server flash:rootfs88xx.12-0-1-11.sbn
+tftp-server flash:rootfs288xx.12-0-1-11.sbn
+tftp-server flash:sb288xx.BE-01-024.sbn
+tftp-server flash:sb2288xx.BE-01-010.sbn
+tftp-server flash:sip88xx.12-0-1-11.loads
+tftp-server flash:ssb288xx.BE-01-005.sbn
+tftp-server flash:vc488xx.12-0-1-11.sbn
+tftp-server flash:kern8831.10-3-1SR5-1.sbn
+tftp-server flash:rootfs8831.10-3-1SR5-1.sbn
+tftp-server flash:sboot8831.10-3-1SR5-1.sbn
+tftp-server flash:sip8831.10-3-1SR5-1.loads
+tftp-server flash:kern8832.12-1-1-23.sbn
+tftp-server flash:loader8832.VO-01-003.sbn
+tftp-server flash:rootfs8832.12-1-1-23.sbn
+tftp-server flash:sb28832.VO-01-015.sbn
+tftp-server flash:sip8832.12-1-1-23.loads
 !
 telephony-service
  extension-assigner tag-type provision-tag
