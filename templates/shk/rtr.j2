@@ -356,10 +356,6 @@ voice register global
   template 1
  !
 !
-{% for i in range(11, 61) -%}
-voice register dn  {{ i }}
- number {{ tel }}{{ i }}
-!
 {% endfor %}
 voice register template  1
  paging-dn 10
@@ -498,5 +494,11 @@ ephone-dn  10
  number {{ tel }}10
  paging ip 239.0.1.10 port 20480
  paging group 10
-!         
+!    
+kron occurrence backup in 30 recurring
+ policy-list save-config
+!
+kron policy-list save-config
+ cli write
+!
 end
