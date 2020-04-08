@@ -5,10 +5,15 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
-hostname HUB
-ip domain-name shk.local
-username cisco privilege 15 secret cisco
-enable secret cisco
+hostname SHK-HUB-RTR
+ip domain-name {{ data["domain_name"] }}
+username SHK-ADMIN privilege 15 secret SHK-PASSWORD
+enable secret SHK-PASSWORD
+!
+aaa new-model
+aaa local authentication attempts max-fail 5
+aaa authentication login default local
+aaa authorization exec default local
 !
 vrf definition FVRF_INTERNET
  description FRONT DOOR VRF FOR GENERAL INTERNET
@@ -35,7 +40,6 @@ crypto ikev2 keyring IKEV2_KEYRING
   pre-shared-key remote CISCO123
  !
 !
-!
 crypto ikev2 profile IKEV2_PROFILE
  match fvrf FVRF_INTERNET
  match identity remote address 0.0.0.0
@@ -43,8 +47,6 @@ crypto ikev2 profile IKEV2_PROFILE
  authentication remote pre-share
  keyring local IKEV2_KEYRING
  dpd 20 5 periodic
-!
-!
 !
 crypto ipsec transform-set IPSEC_XFORM esp-aes 256 esp-sha-hmac
  mode tunnel
@@ -129,11 +131,14 @@ interface Tunnel300
  tunnel vrf FVRF_INTERNET
  tunnel protection ipsec profile IPSEC_PROFILE shared
 !
-interface Ethernet0/0
+interface GigabitEthernet0/0
  description TO HOSPITAL
  ip address 192.168.0.1 255.255.255.252
  ip verify unicast source reachable-via rx
  no shutdown
+ no cdp enable
+ no lldp transmit
+ no lldp receive
 !
 interface {{ data["dmvpn_source"]["interface"] }}
  description TO INTERNET
@@ -141,14 +146,9 @@ interface {{ data["dmvpn_source"]["interface"] }}
  ip address {{ data["dmvpn_source"]["ipv4"]["addr"] }} {{ data["dmvpn_source"]["ipv4"]["netmask"] }}
  service-policy output PMAP_WAN_SHAPING
  no shutdown
-!
-interface Ethernet0/2
- no ip address
- shutdown
-!
-interface Ethernet0/3
- no ip address
- shutdown
+ no cdp enable
+ no lldp transmit
+ no lldp receive
 !
 ip route vrf FVRF_INTERNET 0.0.0.0 0.0.0.0 {{ data["dmvpn_source"]["ipv4"]["nhop"] }} name INTERNET_DEFAULT
 !
@@ -199,19 +199,23 @@ of use. Discontinue access immediately if you do not agree to the
 conditions stated in this notice.
 ----------------------------------------------------------------------
 %
+!
+ip access-list standard ACL_VTY_ACCESS
+ remark POPULATE WITH REMOTE MGMT SUBNETS
+ permit any
+!
 line con 0
  exec-timeout 30 0
  logging synchronous
- login local
  transport preferred none
  stopbits 1
 line aux 0
  no exec
  transport input none
 line vty 0 4
+ access-class ACL_VTY_ACCESS in
  exec-timeout 10 0
  logging synchronous
- login local
  transport preferred none
  transport input ssh
  transport output ssh
