@@ -1,0 +1,112 @@
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname SHK-101-WGB
+!
+logging rate-limit console 9
+username SHK-101-ADMIN password f8XIXGSQz9tr
+enable secret f8XIXGSQz9tr
+!
+no aaa new-model
+no ip source-route
+no ip cef
+no ip dhcp conflict logging
+ip dhcp excluded-address 10.0.0.254 10.0.0.255
+!
+ip dhcp pool POOL_Cisco8821-Provision
+ network 10.0.0.0 255.255.255.0
+ option 150 ip 10.0.0.254
+ lease 0 0 10
+!
+dot11 pause-time 100
+dot11 syslog
+!
+dot11 ssid SHK-101-DATA
+authentication open
+authentication key-management wpa version 2
+wpa-psk ascii DrTD9XEi
+!
+dot11 ssid SHK-101-BIOMED
+authentication open
+authentication key-management wpa version 2
+wpa-psk ascii G8zTMWl7
+!
+dot11 ssid SHK-101-VOICE
+authentication open
+authentication key-management wpa version 2
+wpa-psk ascii IFer4F9R
+!
+dot11 ssid cisco
+authentication open
+!
+!
+!
+no ipv6 cef
+!
+!
+!
+!
+bridge irb
+!
+!
+!
+interface Dot11Radio0
+ no ip address
+ no shutdown
+ ssid cisco
+ antenna gain 0
+ stbc
+ station-role root access-point
+ bridge-group 1
+ bridge-group 1 subscriber-loop-control
+ bridge-group 1 spanning-disabled
+ bridge-group 1 block-unknown-source
+ no bridge-group 1 source-learning
+ no bridge-group 1 unicast-flooding
+!
+interface Dot11Radio1
+ no ip address
+ shutdown
+ encryption mode ciphers aes-ccm
+ ssid SHK-101-DATA
+ antenna gain 0
+ peakdetect
+ stbc
+ station-role workgroup-bridge
+ bridge-group 1
+ bridge-group 1 spanning-disabled
+!
+interface GigabitEthernet0
+ no ip address
+ duplex auto
+ speed auto
+ bridge-group 1
+ bridge-group 1 spanning-disabled
+!
+interface BVI1
+ ip address 10.0.0.254 255.255.255.0
+ ipv6 address dhcp
+ ipv6 address autoconfig
+ ipv6 enable
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+tftp-server flash:8821-WLANDefault.xml
+!
+bridge 1 route ip
+!
+line con 0
+ exec-timeout 480 0
+ logging synchronous
+ login local
+line vty 0 4
+ exec-timeout 480 0
+ logging synchronous
+ login local
+ transport input all
+!
+end

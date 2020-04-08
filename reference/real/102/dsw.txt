@@ -5,18 +5,26 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
+aaa new-model
+aaa local authentication attempts max-fail 5
+aaa authentication login default local
+aaa authorization exec default local
+!
 ip routing
 ip multicast-routing
 ip dhcp snooping
 ip dhcp snooping vlan 10,20,30,50,90
-no dhcp snooping information option
+no ip dhcp snooping information option
+no ip dhcp conflict logging
 hostname SHK-102-DSW
 ip domain-name hospital.com
-username SHK-102-ADMIN privilege 15 secret 5MJASznxqRnu
-enable secret 5MJASznxqRnu
+username SHK-102-ADMIN privilege 15 secret k7kwIfrz1ufp
+enable secret k7kwIfrz1ufp
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
 spanning-tree mode rapid-pvst
+!
+no vstack
 !
 vlan 10
  name DATA
@@ -59,6 +67,8 @@ ip dhcp pool SPECIAL_VLAN50
  default-router 192.168.6.174
  option 43 hex F104C0A8069A
 !
+ip dhcp excluded-address 192.0.2.1
+ip dhcp excluded-address 192.0.2.250 192.0.2.254
 ip dhcp pool TRUNK_AP_VLAN90
  network 192.0.2.0 255.255.255.0
  default-router 192.0.2.254
@@ -514,7 +524,6 @@ interface GigabitEthernet1/0/40
 
 interface GigabitEthernet1/0/41
  description VLAN TRUNK
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 90
  switchport nonegotiate
@@ -522,7 +531,6 @@ interface GigabitEthernet1/0/41
 !
 interface GigabitEthernet1/0/42
  description VLAN TRUNK
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 90
  switchport nonegotiate
@@ -530,7 +538,6 @@ interface GigabitEthernet1/0/42
 !
 interface GigabitEthernet1/0/43
  description VLAN TRUNK
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 90
  switchport nonegotiate
@@ -538,7 +545,6 @@ interface GigabitEthernet1/0/43
 !
 interface GigabitEthernet1/0/44
  description VLAN TRUNK
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 90
  switchport nonegotiate
@@ -546,7 +552,6 @@ interface GigabitEthernet1/0/44
 !
 interface GigabitEthernet1/0/45
  description VLAN TRUNK
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 90
  switchport nonegotiate
@@ -554,7 +559,6 @@ interface GigabitEthernet1/0/45
 !
 interface GigabitEthernet1/0/46
  description VLAN TRUNK
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 90
  switchport nonegotiate
@@ -563,7 +567,6 @@ interface GigabitEthernet1/0/46
 
 interface GigabitEthernet1/0/47
  description WLC
- switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 1-89,91-4094
  switchport nonegotiate
@@ -572,9 +575,13 @@ interface GigabitEthernet1/0/47
 interface GigabitEthernet1/0/48
  description ROUTER P2P
  no switchport
- ip address 192.168.0.2 255.255.255.252
+ ip address 192.168.254.2 255.255.255.252
  ip verify unicast source reachable-via rx
  no shutdown
+!
+ip access-list standard ACL_VTY_ACCESS
+ remark POPULATE WITH REMOTE MGMT SUBNETS
+ permit any
 !
 ip access-list extended ACL_DATA_IN
  permit ip any any
@@ -590,12 +597,16 @@ ip access-list extended ACL_MGMT_IN
 !
 ip access-list extended ACL_MGMT_OUT
  permit udp 192.168.4.0 0.0.3.255 any eq 5246
+ permit udp 192.0.2.0 0.0.0.255 any eq 5246
  deny   udp any any eq 5246
  permit ip any any
 !
 ip domain-name hospital.com
 ip access-list extended ACL_SPECIAL_IN
  permit ip any any
+!
+no ip http server
+no ip http secure-server
 !
 interface Vlan10
  description DATA VLAN
@@ -685,16 +696,15 @@ conditions stated in this notice.
 line con 0
  exec-timeout 30 0
  logging synchronous
- login local
  transport preferred none
  stopbits 1
 line aux 0
  no exec
  transport input none
 line vty 0 4
+ access-class ACL_VTY_ACCESS in
  exec-timeout 10 0
  logging synchronous
- login local
  transport preferred none
  transport input ssh
  transport output ssh

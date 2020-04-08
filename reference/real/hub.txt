@@ -86,7 +86,7 @@ interface Loopback0
 !
 interface Tunnel100
  description DMVPN OVER WIRELINE
- ip address 192.168.1.254 255.255.255.0
+ ip address 192.168.251.254 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN100
@@ -101,7 +101,7 @@ interface Tunnel100
 !
 interface Tunnel200
  description DMVPN OVER CELLULAR
- ip address 192.168.2.254 255.255.255.0
+ ip address 192.168.252.254 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN200
@@ -116,7 +116,7 @@ interface Tunnel200
 !
 interface Tunnel300
  description DMVPN OVER SATELLITE
- ip address 192.168.3.254 255.255.255.0
+ ip address 192.168.253.254 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN300

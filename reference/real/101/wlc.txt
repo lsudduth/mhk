@@ -13,9 +13,9 @@ config mobility group domain SHK-101-MG
 config network rf-network-name SHK-101-RF
 
 
-config mgmtuser add encrypt SHK-101-ADMIN csRDFDlyl3uD read-write
+config mgmtuser add SHK-101-ADMIN f8XIXGSQz9tr read-write
 config mgmtuser telnet SHK-101-ADMIN disable
-config ap mgmtuser add username SHK-101-ADMIN password csRDFDlyl3uD secret csRDFDlyl3uD all
+config ap mgmtuser add username SHK-101-ADMIN password f8XIXGSQz9tr secret f8XIXGSQz9tr all
 
 
 config time ntp server 1 192.168.2.177
@@ -50,7 +50,12 @@ config network multicast mode multicast 239.255.2.154
 config mdns snooping disable
 
 
-config lag enable
+config lag disable
+config port adminmode 1 disable
+config port adminmode 2 disable
+config port adminmode 3 disable
+config port adminmode 4 disable
+config port adminmode 5 enable
 
 
 config switchconfig fips-prerequisite enable
@@ -67,30 +72,35 @@ config dhcp proxy disable bootp-broadcast disable
 
 
 config interface vlan management 40
+config interface port management 5
 config interface address management 192.168.2.154 255.255.255.224 192.168.2.158
 config interface dhcp management primary 192.168.2.158
 config interface dhcp management proxy-mode disable
 
 config interface create data 10
 config interface vlan data 10
+config interface port data 5
 config interface address dynamic-interface data 192.168.1.250 255.255.254.0 192.168.1.254
 config interface dhcp dynamic-interface data primary 192.168.1.254
 config interface dhcp dynamic-interface data proxy-mode disable
 
 config interface create biomed 20
 config interface vlan biomed 20
+config interface port biomed 5
 config interface address dynamic-interface biomed 192.168.2.58 255.255.255.192 192.168.2.62
 config interface dhcp dynamic-interface biomed primary 192.168.2.62
 config interface dhcp dynamic-interface biomed proxy-mode disable
 
 config interface create voice 30
 config interface vlan voice 30
+config interface port voice 5
 config interface address dynamic-interface voice 192.168.2.122 255.255.255.192 192.168.2.126
 config interface dhcp dynamic-interface voice primary 192.168.2.126
 config interface dhcp dynamic-interface voice proxy-mode disable
 
 config interface create special 50
 config interface vlan special 50
+config interface port special 5
 config interface address dynamic-interface special 192.168.2.170 255.255.255.240 192.168.2.174
 config interface dhcp dynamic-interface special primary 192.168.2.174
 config interface dhcp dynamic-interface special proxy-mode disable
@@ -241,7 +251,7 @@ config wlan aaa-override disable 14
 config wlan chd 14 enable
 config wlan session-timeout 14 0
 config wlan usertimeout 0 14
-config wlan ccx aironetiesupport disable 14
+config wlan ccx aironetiesupport enable 14
 config wlan peer-blocking disable 14
 config wlan exclusionlist 14 disabled
 config wlan exclusionlist 14 60
@@ -268,7 +278,7 @@ config wlan profiling local http disable 14
 
 config wlan mdns disable 14
 
-config wlan security wpa akm psk set-key ascii CoYBV7wi 14
+config wlan security wpa akm psk set-key ascii DrTD9XEi 14
 
 config wlan enable 14
 
@@ -313,7 +323,7 @@ config wlan aaa-override disable 15
 config wlan chd 15 enable
 config wlan session-timeout 15 0
 config wlan usertimeout 0 15
-config wlan ccx aironetiesupport disable 15
+config wlan ccx aironetiesupport enable 15
 config wlan peer-blocking disable 15
 config wlan exclusionlist 15 disabled
 config wlan exclusionlist 15 60
@@ -340,7 +350,7 @@ config wlan profiling local http disable 15
 
 config wlan mdns disable 15
 
-config wlan security wpa akm psk set-key ascii 5IjdsIof 15
+config wlan security wpa akm psk set-key ascii G8zTMWl7 15
 
 config wlan enable 15
 
@@ -386,7 +396,7 @@ config wlan aaa-override disable 16
 config wlan chd 16 enable
 config wlan session-timeout 16 0
 config wlan usertimeout 0 16
-config wlan ccx aironetiesupport disable 16
+config wlan ccx aironetiesupport enable 16
 config wlan peer-blocking disable 16
 config wlan exclusionlist 16 disabled
 config wlan exclusionlist 16 60
@@ -413,7 +423,7 @@ config wlan profiling local http disable 16
 
 config wlan mdns disable 16
 
-config wlan security wpa akm psk set-key ascii q9tmteHG 16
+config wlan security wpa akm psk set-key ascii IFer4F9R 16
 
 config wlan enable 16
 
@@ -459,47 +469,36 @@ config acl rule destination port range Cisco8821-Provision 65 0 65535
 
 config acl apply Cisco8821-Provision
 
-config wlan create 512 Cisco8821-Provision cisco
-config wlan broadcast-ssid disable 512
-config wlan acl 512 Cisco8821-Provision
+config wlan create 13 Cisco8821-Provision cisco
+config wlan broadcast-ssid disable 13
+config wlan acl 13 Cisco8821-Provision
 
-config wlan qos 512 silver
-config wlan wmm allow 512
+config wlan qos 13 silver
+config wlan wmm allow 13
 
-config wlan security wpa akm 802.1x disable 512
-config wlan security wpa wpa2 ciphers aes disable 512
-config wlan security wpa wpa2 disable 512
-config wlan security wpa disable 512
-config wlan security web-auth server-precedence 512 local radius ldap
-config wlan security ft over-the-ds disable 512
+config wlan security wpa akm 802.1x disable 13
+config wlan security wpa wpa2 ciphers aes disable 13
+config wlan security wpa wpa2 disable 13
+config wlan security wpa disable 13
+config wlan security web-auth server-precedence 13 local radius ldap
+config wlan security ft over-the-ds disable 13
 
-config wlan radius_server acct interim-update disable 512
-config wlan radius_server acct disable 512
-config wlan radius_server auth disable 512
+config wlan radius_server acct interim-update disable 13
+config wlan radius_server acct disable 13
+config wlan radius_server auth disable 13
 
-config wlan dms enable 512
-config wlan assisted-roaming neighbor-list enable 512
-config wlan interface 512 voice
+config wlan dms enable 13
+config wlan assisted-roaming neighbor-list enable 13
+config wlan interface 13 voice
 
-config wlan chd 512 disable
-config wlan mdns disable 512
+config wlan chd 13 disable
+config wlan mdns disable 13
 
-config wlan exclusionlist 512 0
-config wlan bss-transition enable 512
-config wlan session-timeout 512 1800
-config wlan mfp client enable 512
+config wlan exclusionlist 13 0
+config wlan bss-transition enable 13
+config wlan session-timeout 13 1800
+config wlan mfp client enable 13
 
-config wlan enable 512
-
-config wlan apgroup add Cisco-8821-Provision
-config wlan apgroup interface-mapping add Cisco-8821-Provision 14 data
-
-config wlan apgroup wlan-radio-policy Cisco-8821-Provision 14 none
-config wlan apgroup interface-mapping add Cisco-8821-Provision 15 biomed
-config wlan apgroup wlan-radio-policy Cisco-8821-Provision 15 none
-config wlan apgroup interface-mapping add Cisco-8821-Provision 16 voice
-config wlan apgroup wlan-radio-policy Cisco-8821-Provision 16 none
-config wlan apgroup interface-mapping add Cisco-8821-Provision 512 voice
-config wlan apgroup wlan-radio-policy Cisco-8821-Provision 512 none
+config wlan enable 13
 
 # WLC Config End

@@ -6,12 +6,19 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
+aaa new-model
+aaa local authentication attempts max-fail 5
+aaa authentication login default local
+aaa authorization exec default local
+!
 hostname SHK-102-RTR
-username SHK-102-ADMIN privilege 15 secret 5MJASznxqRnu
-enable secret 5MJASznxqRnu
+username SHK-102-ADMIN privilege 15 secret k7kwIfrz1ufp
+enable secret k7kwIfrz1ufp
 !
 boot-start-marker
 boot-end-marker
+!
+no vstack
 !
 vrf definition Mgmt-intf
  address-family ipv4
@@ -40,7 +47,6 @@ ip domain list vrf FVRF_SATELLITE hospital.com
 !
 logging buffered 51200 informational
 !
-no aaa new-model
 login on-success log
 !
 license accept end user agreement
@@ -118,7 +124,7 @@ interface Tunnel100
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN100
- ip nhrp nhs 192.168.1.254 nbma 192.0.2.1 multicast
+ ip nhrp nhs 192.168.251.254 nbma 192.0.2.1 multicast
  ip nhrp network-id 100
  delay 100
  tunnel source GigabitEthernet0/0/1
@@ -129,14 +135,14 @@ interface Tunnel100
 !
 interface Tunnel200
  description DMVPN OVER CELLULAR
- ip add 192.168.2.2 255.255.255.0
+ ip add 192.168.252.2 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN200
  ip nhrp nhs 192.168.2.254 nbma 192.0.2.1 multicast
  ip nhrp network-id 200
  delay 200
- tunnel source GigabitEthernet0/0/2
+ tunnel source Cellular0/2/0
  tunnel mode gre multipoint
  tunnel key 200
  tunnel vrf FVRF_CELLULAR
@@ -144,7 +150,7 @@ interface Tunnel200
 !
 interface Tunnel300
  description DMVPN OVER SATELLITE
- ip add 192.168.3.2 255.255.255.0
+ ip add 192.168.253.2 255.255.255.0
  no ip redirects
  ip mtu 1400
  ip nhrp authentication DMVPN300
@@ -160,7 +166,7 @@ interface Tunnel300
 interface GigabitEthernet0/0/0
  description DISTRIBUTION SWITCH
  negotiation auto
- ip address 192.168.0.1 255.255.255.252
+ ip address 192.168.254.1 255.255.255.252
  ip verify unicast source reachable-via rx
  no shutdown
 !
@@ -170,6 +176,9 @@ interface GigabitEthernet0/0/1
  vrf forwarding FVRF_WIRELINE
  bandwidth 10000
  no ip dhcp client request tftp-server-address
+ no cdp enable
+ no lldp transmit
+ no lldp receive
  ip address dhcp
  no ip redirects
  no ip unreachables
@@ -184,6 +193,9 @@ interface GigabitEthernet0/0/2
  negotiation auto
  vrf forwarding FVRF_SATELLITE
  bandwidth 1024
+ no cdp enable
+ no lldp transmit
+ no lldp receive
  no ip dhcp client request tftp-server-address
  ip address dhcp
  no ip redirects
@@ -200,6 +212,9 @@ interface Cellular0/2/0
  vrf forwarding FVRF_CELLULAR
  ip address negotiated
  ip access-group ACL_INTERNET_IN in
+ no cdp enable
+ no lldp transmit
+ no lldp receive
  dialer in-band
  dialer-group 1
  pulse-time 1
@@ -237,12 +252,17 @@ router eigrp SHK
 !
 no ip forward-protocol nd
 no ip http server
+no ip http secure-server
 !
 ip route vrf FVRF_CELLULAR 0.0.0.0 0.0.0.0 Cellular0/2/0
 !
 ip ssh version 2
 ip scp server enable
 crypto key generate rsa modulus 2048
+!
+ip access-list standard ACL_VTY_ACCESS
+ remark POPULATE WITH REMOTE MGMT SUBNETS
+ permit any
 !
 ip access-list extended ACL_INTERNET_IN
  remark ALLOW PING, IKE, DHCP, AND IPSEC
@@ -278,16 +298,15 @@ conditions stated in this notice.
 line con 0
  exec-timeout 30 0
  logging synchronous
- login local
  transport preferred none
  stopbits 1
 line aux 0
  no exec
  transport input none
 line vty 0 4
+ access-class ACL_VTY_ACCESS in
  exec-timeout 10 0
  logging synchronous
- login local
  transport preferred none
  transport input ssh
  transport output ssh
@@ -588,6 +607,8 @@ application
   param ea-password 12345
  !
 !         
+tftp-server bootflash:8821-WLANDefault.xml
+!
 telephony-service
  extension-assigner tag-type provision-tag
  max-dn 100
