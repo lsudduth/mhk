@@ -5,6 +5,11 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
+aaa new-model
+aaa local authentication attempts max-fail 5
+aaa authentication login default local
+aaa authorization exec default local
+!
 hostname SHK-{{ data["telephony_prefix"] }}-ASW2
 ip domain-name {{ data["domain_name"] }}
 username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
@@ -82,19 +87,26 @@ conditions stated in this notice.
 ----------------------------------------------------------------------
 %
 !
+no vstack
+no ip http server
+no ip http secure-server
+!
+ip access-list standard ACL_VTY_ACCESS
+ remark POPULATE WITH REMOTE MGMT SUBNETS
+ permit any
+!
 line con 0
  exec-timeout 30 0
  logging synchronous
- login local
  transport preferred none
  stopbits 1
 line aux 0
  no exec
  transport input none
 line vty 0 4
+ access-class ACL_VTY_ACCESS in
  exec-timeout 10 0
  logging synchronous
- login local
  transport preferred none
  transport input ssh
  transport output ssh

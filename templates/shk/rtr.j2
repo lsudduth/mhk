@@ -7,12 +7,19 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
+aaa new-model
+aaa local authentication attempts max-fail 5
+aaa authentication login default local
+aaa authorization exec default local
+!
 hostname SHK-{{ tel }}-RTR
 username {{ data["creds"]["username"] }} privilege 15 secret {{ data["creds"]["password"] }}
 enable secret {{ data["creds"]["password"] }}
 !
 boot-start-marker
 boot-end-marker
+!
+no vstack
 !
 vrf definition Mgmt-intf
  address-family ipv4
@@ -41,7 +48,6 @@ ip domain list vrf FVRF_SATELLITE {{ data["domain_name"] }}
 !
 logging buffered 51200 informational
 !
-no aaa new-model
 login on-success log
 !
 license accept end user agreement
@@ -171,6 +177,9 @@ interface GigabitEthernet0/0/1
  vrf forwarding FVRF_WIRELINE
  bandwidth 10000
  no ip dhcp client request tftp-server-address
+ no cdp enable
+ no lldp transmit
+ no lldp receive
  ip address dhcp
  no ip redirects
  no ip unreachables
@@ -185,6 +194,9 @@ interface GigabitEthernet0/0/2
  negotiation auto
  vrf forwarding FVRF_SATELLITE
  bandwidth 1024
+ no cdp enable
+ no lldp transmit
+ no lldp receive
  no ip dhcp client request tftp-server-address
  ip address dhcp
  no ip redirects
@@ -201,6 +213,9 @@ interface Cellular0/2/0
  vrf forwarding FVRF_CELLULAR
  ip address negotiated
  ip access-group ACL_INTERNET_IN in
+ no cdp enable
+ no lldp transmit
+ no lldp receive
  dialer in-band
  dialer-group 1
  pulse-time 1
@@ -238,12 +253,17 @@ router eigrp SHK
 !
 no ip forward-protocol nd
 no ip http server
+no ip http secure-server
 !
 ip route vrf FVRF_CELLULAR 0.0.0.0 0.0.0.0 Cellular0/2/0
 !
 ip ssh version 2
 ip scp server enable
 crypto key generate rsa modulus 2048
+!
+ip access-list standard ACL_VTY_ACCESS
+ remark POPULATE WITH REMOTE MGMT SUBNETS
+ permit any
 !
 ip access-list extended ACL_INTERNET_IN
  remark ALLOW PING, IKE, DHCP, AND IPSEC
@@ -279,16 +299,15 @@ conditions stated in this notice.
 line con 0
  exec-timeout 30 0
  logging synchronous
- login local
  transport preferred none
  stopbits 1
 line aux 0
  no exec
  transport input none
 line vty 0 4
+ access-class ACL_VTY_ACCESS in
  exec-timeout 10 0
  logging synchronous
- login local
  transport preferred none
  transport input ssh
  transport output ssh

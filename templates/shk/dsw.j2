@@ -5,6 +5,11 @@ service timestamps debug datetime msec localtime
 service timestamps log datetime msec localtime
 service password-encryption
 !
+aaa new-model
+aaa local authentication attempts max-fail 5
+aaa authentication login default local
+aaa authorization exec default local
+!
 ip routing
 ip multicast-routing
 ip dhcp snooping
@@ -18,6 +23,8 @@ enable secret {{ data["creds"]["password"] }}
 vtp mode off
 spanning-tree vlan 1-4094 priority 0
 spanning-tree mode rapid-pvst
+!
+no vstack
 !
 vlan 10
  name DATA
@@ -110,6 +117,10 @@ interface GigabitEthernet1/0/48
  ip verify unicast source reachable-via rx
  no shutdown
 !
+ip access-list standard ACL_VTY_ACCESS
+ remark POPULATE WITH REMOTE MGMT SUBNETS
+ permit any
+!
 ip access-list extended ACL_DATA_IN
  permit ip any any
 !
@@ -131,6 +142,9 @@ ip access-list extended ACL_MGMT_OUT
 ip domain-name {{ data["domain_name"] }}
 ip access-list extended ACL_SPECIAL_IN
  permit ip any any
+!
+no ip http server
+no ip http secure-server
 !
 interface Vlan10
  description DATA VLAN
@@ -220,16 +234,15 @@ conditions stated in this notice.
 line con 0
  exec-timeout 30 0
  logging synchronous
- login local
  transport preferred none
  stopbits 1
 line aux 0
  no exec
  transport input none
 line vty 0 4
+ access-class ACL_VTY_ACCESS in
  exec-timeout 10 0
  logging synchronous
- login local
  transport preferred none
  transport input ssh
  transport output ssh
