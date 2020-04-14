@@ -216,7 +216,7 @@ config wlan create 14 {{ data["wlan"]["data"]["ssid"] }} {{ data["wlan"]["data"]
 
 config wlan radio 14 all
 config wlan interface 14 data
-config wlan broadcast enable 14
+config wlan broadcast-ssid enable 14
 
 config wlan nac radius disable 14
 config wlan mac-filtering disable 14
@@ -288,7 +288,7 @@ config wlan create 15 {{ data["wlan"]["biomed"]["ssid"] }} {{ data["wlan"]["biom
 
 config wlan radio 15 all
 config wlan interface 15 biomed
-config wlan broadcast enable 15
+config wlan broadcast-ssid enable 15
 
 config wlan nac radius disable 15
 config wlan mac-filtering disable 15
@@ -361,7 +361,7 @@ config wlan create 16 {{ data["wlan"]["voice"]["ssid"] }} {{ data["wlan"]["voice
 
 config wlan radio 16 all
 config wlan interface 16 voice
-config wlan broadcast enable 16
+config wlan broadcast-ssid enable 16
 
 config wlan nac radius disable 16
 config wlan mac-filtering disable 16
