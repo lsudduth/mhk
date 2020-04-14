@@ -50,7 +50,7 @@ config network multicast mode multicast 239.255.2.154
 config mdns snooping disable
 
 {# WLC LAG is static, not LACP/PAgP ; expecting single mGig port only, although with this ANY port on the WLC will work #}
-config lag disable
+config lag enable
 config port adminmode 1 disable
 config port adminmode 2 disable
 config port adminmode 3 disable
