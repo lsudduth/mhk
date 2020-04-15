@@ -346,6 +346,8 @@ voice register global
  load 8841 sip88xx.12-0-1-11
  load 8821 sip8821.11-0-3SR6-15
  load 8831 sip8831.10-3-1SR5-1
+ authenticate register
+ timezone 21
  tftp-path flash:
  file text
  create profile
@@ -356,9 +358,10 @@ voice register global
   template 1
  !
 !
-{% for i in range(11, 61) -%}
-voice register dn  {{ i }}
- number {{ tel }}{{ i }}
+!The following 3 lines should be removed
+!{% for i in range(11, 61) -%}
+!voice register dn  {{ i }}
+! number {{ tel }}{{ i }}
 !
 {% endfor %}
 voice register template  1
@@ -369,7 +372,9 @@ voice register pool  {{ i }}
  id mac 02EA.EAEA.00{{ i }}
  number 1 dn {{ i }}
  dtmf-relay rtp-nte
+ username phone{{ i }} password 12345
  codec g711ulaw
+ description Phone{{ i }}
  paging-dn 10
  provision-tag {{ i }}
 !
@@ -401,41 +406,41 @@ application
  !
 !         
 tftp-server bootflash:8821-WLANDefault.xml
-tftp-server flash:kern2.78xx.12-0-1-11.sbn
-tftp-server flash:kern78xx.12-0-1-11.sbn
-tftp-server flash:rootfs2.78xx.12-0-1-11.sbn
-tftp-server flash:rootfs78xx.12-0-1-11.sbn
-tftp-server flash:sboot2.78xx.12-0-1-11.sbn
-tftp-server flash:sboot78xx.12-0-1-11.sbn
-tftp-server flash:sip78xx.12-0-1-11.loads
-tftp-server flash:dtblob8821.HE-01-005.sbn
-tftp-server flash:fbi8821.HE-01-010.sbn
-tftp-server flash:kern8821.11-0-3SR6-15.sbn
-tftp-server flash:rootfs8821.11-0-3SR6-15.sbn
-tftp-server flash:sb28821.HE-01-020.sbn
-tftp-server flash:sip8821.11-0-3SR6-15.loads
-tftp-server flash:vc48821.11-0-3SR6-15.sbn
-tftp-server flash:boot1288xx.BE-01-007.sbn
-tftp-server flash:fbi88xx.BE-01-010.sbn
-tftp-server flash:kern88xx.12-0-1-11.sbn
-tftp-server flash:kern288xx.12-0-1-11.sbn
-tftp-server flash:m0patch288xx.BE-01-001.sbn
-tftp-server flash:rootfs88xx.12-0-1-11.sbn
-tftp-server flash:rootfs288xx.12-0-1-11.sbn
-tftp-server flash:sb288xx.BE-01-024.sbn
-tftp-server flash:sb2288xx.BE-01-010.sbn
-tftp-server flash:sip88xx.12-0-1-11.loads
-tftp-server flash:ssb288xx.BE-01-005.sbn
-tftp-server flash:vc488xx.12-0-1-11.sbn
-tftp-server flash:kern8831.10-3-1SR5-1.sbn
-tftp-server flash:rootfs8831.10-3-1SR5-1.sbn
-tftp-server flash:sboot8831.10-3-1SR5-1.sbn
-tftp-server flash:sip8831.10-3-1SR5-1.loads
-tftp-server flash:kern8832.12-1-1-23.sbn
-tftp-server flash:loader8832.VO-01-003.sbn
-tftp-server flash:rootfs8832.12-1-1-23.sbn
-tftp-server flash:sb28832.VO-01-015.sbn
-tftp-server flash:sip8832.12-1-1-23.loads
+tftp-server flash:/cme/7841/kern2.78xx.12-0-1-11.sbn
+tftp-server flash:/cme/7841/kern78xx.12-0-1-11.sbn
+tftp-server flash:/cme/7841/rootfs2.78xx.12-0-1-11.sbn
+tftp-server flash:/cme/7841/rootfs78xx.12-0-1-11.sbn
+tftp-server flash:/cme/7841/sboot2.78xx.12-0-1-11.sbn
+tftp-server flash:/cme/7841/sboot78xx.12-0-1-11.sbn
+tftp-server flash:/cme/7841/sip78xx.12-0-1-11.loads
+tftp-server flash:/cme/8821/dtblob8821.HE-01-005.sbn
+tftp-server flash:/cme/8821/fbi8821.HE-01-010.sbn
+tftp-server flash:/cme/8821/kern8821.11-0-3SR6-15.sbn
+tftp-server flash:/cme/8821/rootfs8821.11-0-3SR6-15.sbn
+tftp-server flash:/cme/8821/sb28821.HE-01-020.sbn
+tftp-server flash:/cme/8821/sip8821.11-0-3SR6-15.loads
+tftp-server flash:/cme/8821/vc48821.11-0-3SR6-15.sbn
+tftp-server flash:/cme/88xx/boot1288xx.BE-01-007.sbn
+tftp-server flash:/cme/88xx/fbi88xx.BE-01-010.sbn
+tftp-server flash:/cme/88xx/kern88xx.12-0-1-11.sbn
+tftp-server flash:/cme/88xx/kern288xx.12-0-1-11.sbn
+tftp-server flash:/cme/88xx/m0patch288xx.BE-01-001.sbn
+tftp-server flash:/cme/88xx/rootfs88xx.12-0-1-11.sbn
+tftp-server flash:/cme/88xx/rootfs288xx.12-0-1-11.sbn
+tftp-server flash:/cme/88xx/sb288xx.BE-01-024.sbn
+tftp-server flash:/cme/88xx/sb2288xx.BE-01-010.sbn
+tftp-server flash:/cme/88xx/sip88xx.12-0-1-11.loads
+tftp-server flash:/cme/88xx/ssb288xx.BE-01-005.sbn
+tftp-server flash:/cme/88xx/vc488xx.12-0-1-11.sbn
+tftp-server flash:/cme/8831/kern8831.10-3-1SR5-1.sbn
+tftp-server flash:/cme/8831/rootfs8831.10-3-1SR5-1.sbn
+tftp-server flash:/cme/8831/sboot8831.10-3-1SR5-1.sbn
+tftp-server flash:/cme/8831/sip8831.10-3-1SR5-1.loads
+tftp-server flash:/cme/8832/kern8832.12-1-1-23.sbn
+tftp-server flash:/cme/8832/loader8832.VO-01-003.sbn
+tftp-server flash:/cme/8832/rootfs8832.12-1-1-23.sbn
+tftp-server flash:/cme/8832/sb28832.VO-01-015.sbn
+tftp-server flash:/cme/8832/sip8832.12-1-1-23.loads
 !
 telephony-service
  extension-assigner tag-type provision-tag
@@ -486,7 +491,7 @@ dial-peer voice 4 voip
 !
 dial-peer voice 100 voip
  description TELEPHONY USER INTERFACE (TUI)
- service extensionassigner out-bound
+ service EA out-bound
  destination-pattern {{ tel }}00
  session protocol sipv2
  session target ipv4:{{ data["addr"]["rtr"]["lb0"] }}
